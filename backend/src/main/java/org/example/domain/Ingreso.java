@@ -50,4 +50,67 @@ public class Ingreso implements Comparable<Ingreso>{
         if (porNivel != 0) return porNivel;
         return this.fechaIngreso.compareTo(o.fechaIngreso); // desempate por llegada
     }
+    // ===== Getters de dominio =====
+
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public Enfermera getEnfermera() {
+        return enfermera;
+    }
+
+    public LocalDateTime getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public String getInforme() {
+        return informe;
+    }
+
+    public NivelEmergencia getNivelEmergencia() {
+        return nivelEmergencia;
+    }
+
+    public EstadoIngreso getEstado() {
+        return estado;
+    }
+
+    public Float getTemperatura() {
+        return temperatura;
+    }
+
+    // Value object completo (por si lo necesitás)
+    public FrecuenciaCardiaca getFrecuenciaCardiacaVO() {
+        return frecuenciaCardiaca;
+    }
+
+    // Conveniencia para el mapper / JSON
+    public String  getFrecuenciaCardiaca() {
+        // ajustá el nombre del metodo según tu value object
+        return frecuenciaCardiaca.getValorFormateado();
+    }
+
+    public FrecuenciaRespiratoria getFrecuenciaRespiratoriaVO() {
+        return frecuenciaRespiratoria;
+    }
+
+    public String getFrecuenciaRespiratoria() {
+        // idem, ajustá si tu VO usa otro nombre
+        return frecuenciaRespiratoria.getValorFormateado();
+    }
+
+    public TensionArterial getTensionArterialVO() {
+        return tensionArterial;
+    }
+
+    public String getTensionSistolica() {
+        // ajustá a como se llamen los getters en TensionArterial
+        return tensionArterial.getSistolica();
+    }
+
+    public String getTensionDiastolica() {
+        return tensionArterial.getDiastolica();
+    }
+
 }

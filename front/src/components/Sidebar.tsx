@@ -1,5 +1,4 @@
-// import { useAuthStore } from "../store/auth";
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 export default function Sidebar() {
   // const logout = useAuthStore((s) => s.logout);
@@ -10,15 +9,22 @@ export default function Sidebar() {
         <h2 className="font-bold text-lg">Panel Admin</h2>
 
         <nav className="mt-4 flex flex-col gap-2 text-sm">
-          <Link to="/paciente" className="hover:text-black text-gray-600">
-            Paciente
-          </Link>
-          <Link to="/admin/turnos" className="hover:text-black text-gray-600">
-            Enfermero
-          </Link>
-          <Link to="/admin/clientes" className="hover:text-black text-gray-600">
-            Clientes
-          </Link>
+          <NavLink
+            to="/urgencia"
+            className={({ isActive }) =>
+              `rounded-lg px-3 py-2 transition hover:text-black ${isActive ? "bg-gray-100 font-semibold text-black" : "text-gray-600"}`
+            }
+          >
+            Urgencias
+          </NavLink>
+          <NavLink
+            to="/paciente"
+            className={({ isActive }) =>
+              `rounded-lg px-3 py-2 transition hover:text-black ${isActive ? "bg-gray-100 font-semibold text-black" : "text-gray-600"}`
+            }
+          >
+            Pacientes
+          </NavLink>
         </nav>
 
         <button

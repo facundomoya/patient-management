@@ -95,3 +95,4 @@ Deberías ver JSON con datos mock.
 - Abre `http://localhost:8080/api/pacientes` directamente
 - Revisa la consola del navegador para errores
 
+

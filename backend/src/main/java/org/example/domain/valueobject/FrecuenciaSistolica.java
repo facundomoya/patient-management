@@ -13,6 +13,7 @@ public class FrecuenciaSistolica extends Frecuencia{
 
     @Override
     public String getValorFormateado() {
-        return "";
+        return String.format("%.1f",this.value);
     }
+
 }

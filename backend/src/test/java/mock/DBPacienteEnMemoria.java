@@ -6,9 +6,12 @@ import org.example.domain.Paciente;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
 
 public class DBPacienteEnMemoria implements RepositorioPacientes {
-    private Map<String,Paciente> pacientes;
+
+    private Map<String, Paciente> pacientes;
 
     public DBPacienteEnMemoria() {
         this.pacientes = new HashMap<>();
@@ -22,5 +25,11 @@ public class DBPacienteEnMemoria implements RepositorioPacientes {
     @Override
     public Optional<Paciente> buscarPacientePorCuil(String cuil) {
         return Optional.ofNullable(pacientes.get(cuil));
+    }
+
+    @Override
+    public List<Paciente> listarTodos() {
+        // Para tests, alcanza con devolver una copia de los valores
+        return new ArrayList<>(pacientes.values());
     }
 }

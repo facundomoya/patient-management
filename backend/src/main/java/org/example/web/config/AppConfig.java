@@ -1,6 +1,7 @@
 package org.example.web.config;
 
 import org.example.app.AltaPacienteService;
+import org.example.app.ServicioUrgencias;
 import org.example.app.interfaces.RepositorioObrasSociales;
 import org.example.app.interfaces.RepositorioPacientes;
 import org.example.infrastructure.RepositorioObrasSocialesEnMemoria;
@@ -29,5 +30,10 @@ public class AppConfig {
             RepositorioObrasSociales repoOS
     ) {
         return new AltaPacienteService(repoPacientes, repoOS);
+    }
+
+    @Bean
+    public ServicioUrgencias servicioUrgencias(RepositorioPacientes repoPacientes){
+     return new ServicioUrgencias(repoPacientes);
     }
 }

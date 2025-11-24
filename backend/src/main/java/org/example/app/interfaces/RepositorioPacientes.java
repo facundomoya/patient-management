@@ -11,6 +11,6 @@ public interface RepositorioPacientes {
 
     Optional<Paciente> buscarPacientePorCuil(String cuil);
 
-    // Nuevo método para listar todos los pacientes
+    // Nuevo metodo para listar todos los pacientes
     List<Paciente> listarTodos();
 }
