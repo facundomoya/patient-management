@@ -29,12 +29,25 @@ public class RepositorioPacientesEnMemoria implements RepositorioPacientes {
         Afiliacion afil1 = new Afiliacion(os1, "12345678");
         Paciente p1 = new Paciente(
                 "20-43336577-2",   // ajustá al formato que acepte tu Guard
-                "Juan",
-                "Pérez",
+                "Santiago Joaquin",
+                "Martin Peñalosa",
                 dom1,
                 afil1
         );
+
+        // Paciente 2: con obra social
+        Domicilio dom2 = new Domicilio("Av. Peron", 1000, "Yerba Buena");
+        ObraSocial os2 = new ObraSocial("OSDE", "OSDE");
+        Afiliacion afil2 = new Afiliacion(os2, "11345668");
+        Paciente p2 = new Paciente(
+                "20-44580992-7",   
+                "Juan Martin",
+                "Bossi",
+                dom2,
+                afil2
+        );
         guardarPaciente(p1);
+        guardarPaciente(p2);
     }
 
     @Override
