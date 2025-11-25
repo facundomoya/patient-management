@@ -1,15 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
-import { listarIngresosPendientes, registrarUrgencia } from "../api/urgencia";
-import type { IngresoUrgencia, NivelEmergencia, RegistrarUrgenciaDTO } from "../api/urgencia";
+import { useState, useEffect } from "react";
+import UrgenciaModal from "../modal/UrgenciaModal";
+import { ListaEsperaTable } from "../components/ListaEsperaTable";
+import toast from "react-hot-toast";
+import { Plus } from "lucide-react";
+import {listarIngresosPendientes, registrarUrgencia, type RegistrarUrgenciaDTO, type IngresoUrgencia,type NivelEmergencia,} from "../api/urgencia";
 import { extractErrorMessage } from "../api/http";
+import { validarCuil, formatearCuil } from "../utils/cuil";
+import { useCuilInput } from "../hooks/useCuilInput";
 
 type FormState = {
-  cuilPaciente: string;
   informe: string;
   nivelEmergencia: NivelEmergencia | "";
+
   enfermeraNombre: string;
   enfermeraApellido: string;
-  enfermeraCuil: string;
+
+  // SIGNOS VITALES
   temperatura: string;
   frecuenciaCardiaca: string;
   frecuenciaRespiratoria: string;
@@ -18,12 +24,12 @@ type FormState = {
 };
 
 const initialForm: FormState = {
-  cuilPaciente: "",
   informe: "",
   nivelEmergencia: "",
+
   enfermeraNombre: "",
   enfermeraApellido: "",
-  enfermeraCuil: "",
+
   temperatura: "",
   frecuenciaCardiaca: "",
   frecuenciaRespiratoria: "",
@@ -39,341 +45,275 @@ const niveles: NivelEmergencia[] = [
   "Sin Urgencia",
 ];
 
+/* ----------------------------------------
+   COMPONENTE PRINCIPAL
+---------------------------------------- */
+
 export default function Urgencia() {
+  const [openModal, setOpenModal] = useState(false);
   const [form, setForm] = useState<FormState>(initialForm);
-  const [okMsg, setOkMsg] = useState<string | null>(null);
-  const [errMsg, setErrMsg] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [ingresos, setIngresos] = useState<IngresoUrgencia[]>([]);
-  const [loadingIngresos, setLoadingIngresos] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const hayDatosEnFormulario = useMemo(
-    () => JSON.stringify(form) !== JSON.stringify(initialForm),
-    [form]
-  );
+  // HOOKS DE CUIL
+  const cuilPaciente = useCuilInput("");
+  const cuilEnfermera = useCuilInput("");
 
+  function onChange<K extends keyof FormState>(key: K, value: FormState[K]) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  /* ----------------------------------------
+     Cargar lista de espera al iniciar
+  ---------------------------------------- */
   useEffect(() => {
     cargarIngresos();
   }, []);
 
-  function onChange<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm(prev => ({ ...prev, [key]: value }));
-  }
-
   async function cargarIngresos() {
-    setLoadingIngresos(true);
     try {
-      const lista = await listarIngresosPendientes();
-      setIngresos(lista);
-    } catch (err) {
-      setErrMsg(extractErrorMessage(err));
-    } finally {
-      setLoadingIngresos(false);
+      const data = await listarIngresosPendientes();
+      setIngresos(data);
+    } catch (e) {
+      toast.error("No se pudo cargar la lista de espera");
+      console.error(e);
     }
   }
 
-  function validar(): string | null {
-    if (!form.cuilPaciente.trim()) return "El CUIL del paciente es obligatorio";
-    if (!form.informe.trim()) return "El informe clínico es obligatorio";
-    if (!form.nivelEmergencia) return "Seleccione un nivel de emergencia";
-    if (!form.enfermeraNombre.trim()) return "El nombre de la enfermera es obligatorio";
-    if (!form.enfermeraApellido.trim()) return "El apellido de la enfermera es obligatorio";
-    if (!form.enfermeraCuil.trim()) return "El CUIL de la enfermera es obligatorio";
-    return null;
-  }
+  /* ----------------------------------------
+     Parse numérico opcional
+  ---------------------------------------- */
 
-  function parseOptionalNumber(value: string, label: string): number | null {
-    if (!value.trim()) return null;
+  function parseOptionalNumber(value: string): number | undefined {
+    if (!value.trim()) return undefined;
     const num = Number(value);
-    if (Number.isNaN(num)) {
-      throw new Error(`${label} debe ser numérica`);
-    }
-    return num;
+    return Number.isNaN(num) ? undefined : num;
   }
+
+  /* ----------------------------------------
+     SUBMIT DEL FORMULARIO
+  ---------------------------------------- */
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErrMsg(null);
-    setOkMsg(null);
+    setLoading(true);
 
-    const validation = validar();
-    if (validation) {
-      setErrMsg(validation);
+    // VALIDACIÓN CUIL PACIENTE
+    if (!validarCuil(cuilPaciente.value)) {
+      toast.error("El CUIL del paciente es inválido");
+      setLoading(false);
       return;
     }
 
-    let temperatura: number | null;
-    let fc: number | null;
-    let fr: number | null;
-    let ts: number | null;
-    let td: number | null;
-
-    try {
-      temperatura = parseOptionalNumber(form.temperatura, "Temperatura");
-      fc = parseOptionalNumber(form.frecuenciaCardiaca, "Frecuencia cardíaca");
-      fr = parseOptionalNumber(form.frecuenciaRespiratoria, "Frecuencia respiratoria");
-      ts = parseOptionalNumber(form.tensionSistolica, "Tensión sistólica");
-      td = parseOptionalNumber(form.tensionDiastolica, "Tensión diastólica");
-    } catch (err) {
-      setErrMsg((err as Error).message);
+    // VALIDACIÓN CUIL ENFERMERA
+    if (!validarCuil(cuilEnfermera.value)) {
+      toast.error("El CUIL de la enfermera es inválido");
+      setLoading(false);
       return;
     }
 
     const payload: RegistrarUrgenciaDTO = {
-      cuilPaciente: form.cuilPaciente.trim(),
+      cuilPaciente: formatearCuil(cuilPaciente.value),
       informe: form.informe.trim(),
       nivelEmergencia: form.nivelEmergencia as NivelEmergencia,
+
       enfermeraNombre: form.enfermeraNombre.trim(),
       enfermeraApellido: form.enfermeraApellido.trim(),
-      enfermeraCuil: form.enfermeraCuil.trim(),
-      temperatura: temperatura ?? undefined,
-      frecuenciaCardiaca: fc ?? undefined,
-      frecuenciaRespiratoria: fr ?? undefined,
-      tensionSistolica: ts ?? undefined,
-      tensionDiastolica: td ?? undefined,
+      enfermeraCuil: formatearCuil(cuilEnfermera.value),
+
+      temperatura: parseOptionalNumber(form.temperatura),
+      frecuenciaCardiaca: parseOptionalNumber(form.frecuenciaCardiaca),
+      frecuenciaRespiratoria: parseOptionalNumber(form.frecuenciaRespiratoria),
+      tensionSistolica: parseOptionalNumber(form.tensionSistolica),
+      tensionDiastolica: parseOptionalNumber(form.tensionDiastolica),
     };
 
-    setLoading(true);
     try {
       await registrarUrgencia(payload);
-      setOkMsg("Urgencia registrada correctamente");
-      setForm(initialForm);
+
+      toast.success("Urgencia registrada correctamente", {
+        style: { borderRadius: "12px", background: "#333", color: "#fff" },
+      });
+
       await cargarIngresos();
+      setForm(initialForm);
+      cuilPaciente.handleChange("");
+      cuilEnfermera.handleChange("");
+      setOpenModal(false);
     } catch (err) {
-      setErrMsg(extractErrorMessage(err));
+      const msg = extractErrorMessage(err);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   }
 
+  /* ----------------------------------------
+     RENDER
+  ---------------------------------------- */
+
   return (
-    <div className="mx-auto max-w-5xl p-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Registro de Urgencias</h1>
-        <button
-          onClick={cargarIngresos}
-          disabled={loadingIngresos}
-          className="rounded-xl border px-4 py-2 text-sm hover:bg-slate-50 disabled:opacity-60"
-        >
-          {loadingIngresos ? "Actualizando..." : "Actualizar lista"}
+    <div className="mx-auto max-w-6xl p-6">
+
+      {/* HEADER */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-[#37393A]">Registro de Urgencias</h1>
+        <button onClick={() => setOpenModal(true)} className="relative inline-flex items-center gap-2    justify-center p-0.5 overflow-hidden text-sm font-semibold rounded-xl bg-linear-to-br from-[#4ea5f5] to-[#4fcd89] group shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-95">
+          <span className=" relative px-5 py-2.5 bg-white text-[#2e3440] rounded-[10px] transition-all duration-300 group-hover:bg-transparent group-hover:text-white flex items-center gap-2">
+            <Plus size={16} />Registrar urgencia</span>
         </button>
       </div>
 
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        {okMsg && (
-          <div className="rounded-lg border border-green-600 bg-green-50 px-4 py-3 text-green-800">
-            {okMsg}
-          </div>
-        )}
-        {errMsg && (
-          <div className="rounded-lg border border-red-600 bg-red-50 px-4 py-3 text-red-800">
-            {errMsg}
-          </div>
-        )}
+      <UrgenciaModal open={openModal} onClose={() => setOpenModal(false)}>
+        <form
+          onSubmit={onSubmit}
+          className="space-y-8 p-1"
+        >
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <div>
-            <label className="block text-sm text-slate-600">CUIL paciente *</label>
-            <input
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-              placeholder="20-12345678-9"
-              value={form.cuilPaciente}
-              onChange={(e) => onChange("cuilPaciente", e.target.value)}
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm text-slate-600">Informe *</label>
-            <textarea
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-              rows={1}
-              value={form.informe}
-              onChange={(e) => onChange("informe", e.target.value)}
-            />
-          </div>
-        </div>
+          <div className="grid grid-cols-2 gap-6">
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <div>
-            <label className="block text-sm text-slate-600">Nivel de emergencia *</label>
-            <select
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring bg-white"
-              value={form.nivelEmergencia}
-              onChange={(e) => onChange("nivelEmergencia", e.target.value as NivelEmergencia | "")}
-            >
-              <option value="">Seleccione...</option>
-              {niveles.map(n => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm text-slate-600">Enfermera nombre *</label>
-            <input
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-              value={form.enfermeraNombre}
-              onChange={(e) => onChange("enfermeraNombre", e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-slate-600">Enfermera apellido *</label>
-            <input
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-              value={form.enfermeraApellido}
-              onChange={(e) => onChange("enfermeraApellido", e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <div>
-            <label className="block text-sm text-slate-600">Enfermera CUIL *</label>
-            <input
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-              placeholder="27-00000000-0"
-              value={form.enfermeraCuil}
-              onChange={(e) => onChange("enfermeraCuil", e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="rounded-2xl border p-4">
-          <p className="mb-2 text-sm font-medium text-slate-700">Signos vitales (opcional)</p>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div>
-              <label className="block text-sm text-slate-600">Temperatura (°C)</label>
+            {/* CUIL PACIENTE */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">CUIL paciente *</label>
               <input
-                className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-                inputMode="decimal"
-                value={form.temperatura}
-                onChange={(e) => onChange("temperatura", e.target.value)}
+                className={`
+            rounded-2xl px-4 py-3 bg-white/70
+            border shadow-sm
+            focus:ring-2 focus:ring-blue-300
+            outline-none transition-all backdrop-blur-sm
+            hover:shadow-md
+            ${cuilPaciente.valido === false ? "border-red-500" : "border-gray-300"}
+            ${cuilPaciente.valido === true ? "border-green-600" : ""}
+          `}
+                value={cuilPaciente.value}
+                onChange={(e) => cuilPaciente.handleChange(e.target.value)}
+                placeholder="XX-XXXXXXXX-X"
               />
             </div>
-            <div>
-              <label className="block text-sm text-slate-600">Frecuencia cardíaca (lpm)</label>
-              <input
-                className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-                inputMode="decimal"
-                value={form.frecuenciaCardiaca}
-                onChange={(e) => onChange("frecuenciaCardiaca", e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-slate-600">Frecuencia respiratoria (rpm)</label>
-              <input
-                className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-                inputMode="decimal"
-                value={form.frecuenciaRespiratoria}
-                onChange={(e) => onChange("frecuenciaRespiratoria", e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-slate-600">Tensión sistólica (mmHg)</label>
-              <input
-                className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-                inputMode="decimal"
-                value={form.tensionSistolica}
-                onChange={(e) => onChange("tensionSistolica", e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-slate-600">Tensión diastólica (mmHg)</label>
-              <input
-                className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
-                inputMode="decimal"
-                value={form.tensionDiastolica}
-                onChange={(e) => onChange("tensionDiastolica", e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-2xl bg-slate-900 px-5 py-2.5 text-white shadow hover:opacity-90 disabled:opacity-60"
-          >
-            {loading ? "Registrando..." : "Registrar urgencia"}
-          </button>
-          <button
-            type="button"
-            disabled={loading || !hayDatosEnFormulario}
-            onClick={() => { setForm(initialForm); setOkMsg(null); setErrMsg(null); }}
-            className="rounded-2xl border px-4 py-2 hover:bg-slate-50 disabled:opacity-60"
-          >
-            Limpiar
-          </button>
-        </div>
-      </form>
+            {/* INFORME */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">Informe *</label>
+              <input
+                className="
+            rounded-2xl px-4 py-3 bg-white/70 
+            border border-gray-300 shadow-sm 
+            hover:shadow-md
+            focus:ring-2 focus:ring-blue-300
+            outline-none transition-all backdrop-blur-sm
+          "
+                value={form.informe}
+                onChange={(e) => onChange('informe', e.target.value)}
+              />
+            </div>
 
-      <section className="mt-12">
-        <h2 className="text-xl font-semibold tracking-tight">Lista de espera</h2>
-        {loadingIngresos && ingresos.length === 0 ? (
-          <div className="mt-4 rounded-xl border p-8 text-center text-slate-500">
-            Cargando ingresos...
-          </div>
-        ) : ingresos.length === 0 ? (
-          <div className="mt-4 rounded-xl border p-8 text-center text-slate-500">
-            No hay ingresos pendientes
-          </div>
-        ) : (
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {ingresos.map((ingreso, idx) => (
-              <article
-                key={`${ingreso.cuilPaciente}-${idx}`}
-                className="rounded-xl border bg-white p-4 shadow-sm"
+            {/* NIVEL */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">Nivel  *</label>
+              <select className="rounded-2xl px-4 py-3 bg-white/70 border border-gray-300 shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-300 outline-none transition-all backdrop-blur-sm"
+                value={form.nivelEmergencia}
+                onChange={(e) => onChange('nivelEmergencia', e.target.value as NivelEmergencia | '')}
               >
-                <header className="mb-2 flex items-center justify-between gap-2">
-                  <div>
-                    <p className="text-sm text-slate-500">Paciente</p>
-                    <h3 className="text-lg font-semibold text-slate-900">
-                      {ingreso.apellidoPaciente}, {ingreso.nombrePaciente}
-                    </h3>
-                    <p className="text-xs text-slate-500">CUIL: {ingreso.cuilPaciente}</p>
-                  </div>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                    {ingreso.nivelEmergencia}
-                  </span>
-                </header>
-                <p className="text-sm text-slate-700 whitespace-pre-line">{ingreso.informe}</p>
+                <option value="">Seleccione…</option>
+                {niveles.map((n) => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
+            </div>
 
-                <dl className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-600">
-                  {ingreso.temperatura != null && (
-                    <div>
-                      <dt className="font-semibold text-slate-500">Temp.</dt>
-                      <dd>{ingreso.temperatura} °C</dd>
-                    </div>
-                  )}
-                  {ingreso.frecuenciaCardiaca && (
-                    <div>
-                      <dt className="font-semibold text-slate-500">FC</dt>
-                      <dd>{ingreso.frecuenciaCardiaca} lpm</dd>
-                    </div>
-                  )}
-                  {ingreso.frecuenciaRespiratoria && (
-                    <div>
-                      <dt className="font-semibold text-slate-500">FR</dt>
-                      <dd>{ingreso.frecuenciaRespiratoria} rpm</dd>
-                    </div>
-                  )}
-                  {ingreso.tensionSistolica && (
-                    <div>
-                      <dt className="font-semibold text-slate-500">TA Sist.</dt>
-                      <dd>{ingreso.tensionSistolica} mmHg</dd>
-                    </div>
-                  )}
-                  {ingreso.tensionDiastolica && (
-                    <div>
-                      <dt className="font-semibold text-slate-500">TA Diast.</dt>
-                      <dd>{ingreso.tensionDiastolica} mmHg</dd>
-                    </div>
-                  )}
-                </dl>
-              </article>
-            ))}
+            {/* CUIL ENFERMERA */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">Enfermera CUIL *</label>
+              <input
+                className={`
+            rounded-2xl px-4 py-3 bg-white/70 
+            border shadow-sm hover:shadow-md
+            focus:ring-2 focus:ring-blue-300
+            outline-none transition-all backdrop-blur-sm
+            ${cuilEnfermera.valido === false ? "border-red-500" : "border-gray-300"}
+            ${cuilEnfermera.valido === true ? "border-green-600" : ""}
+          `}
+                value={cuilEnfermera.value}
+                onChange={(e) => cuilEnfermera.handleChange(e.target.value)}
+                placeholder="XX-XXXXXXXX-X"
+              />
+            </div>
+
+            {/* NOMBRE ENFERMERA */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">Enfermera Nombre *</label>
+              <input
+                className="
+            rounded-2xl px-4 py-3 bg-white/70
+            border border-gray-300 shadow-sm 
+            hover:shadow-md
+            focus:ring-2 focus:ring-blue-300
+            outline-none transition-all backdrop-blur-sm
+          "
+                value={form.enfermeraNombre}
+                onChange={(e) => onChange('enfermeraNombre', e.target.value)}
+              />
+            </div>
+
+            {/* APELLIDO ENFERMERA */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">Enfermera Apellido *</label>
+              <input className="rounded-2xl px-4 py-3 bg-white/70 border border-gray-300 shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-300 outline-none transition-all backdrop-blur-sm"
+                value={form.enfermeraApellido}
+                onChange={(e) => onChange('enfermeraApellido', e.target.value)}
+              />
+            </div>
           </div>
-        )}
-      </section>
+
+          {/* SIGNOS VITALES */}
+          <div className="rounded-3xl bg-white/50 backdrop-blur-lg">
+            <p className="text-sm font-bold text-gray-800 mb-4">Signos vitales</p>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                ["temperatura", "Temperatura (°C)"],
+                ["frecuenciaCardiaca", "Frecuencia cardíaca (lpm)"],
+                ["frecuenciaRespiratoria", "Frecuencia respiratoria (rpm)"],
+                ["tensionSistolica", "Tensión sistólica (mmHg)"],
+                ["tensionDiastolica", "Tensión diastólica (mmHg)"],
+              ].map(([field, label]) => (
+                <div key={field} className="flex flex-col gap-1">
+                  <label className="text-sm font-medium text-gray-600">{label}</label>
+                  <input className="rounded-xl px-4 py-2.5 bg-white/70 border border-gray-300 shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-300 outline-none transition-all backdrop-blur-sm"
+                    value={(form as any)[field]}
+                    onChange={(e) => onChange(field as any, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* BOTONES */}
+          <div className="flex justify-end gap-4 pt-2">
+
+            {/* CANCELAR */}
+            <button type="button" onClick={() => setOpenModal(false)} className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium rounded-xl group bg-linear-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white focus:ring-4 focus:outline-none focus:ring-pink-200">
+              <span className=" relative px-4 py-2.5 bg-white text-gray-700 rounded-xl transition-all ease-in duration-150 group-hover:bg-transparent group-hover:text-white">Cancelar</span>
+            </button>
+            {/* GUARDAR */}
+            <button type="submit" disabled={loading} className="relative inline-flex items-center gap-2    justify-center p-0.5 overflow-hidden text-sm font-semibold rounded-xl bg-linear-to-br from-[#4ea5f5] to-[#4fcd89] group shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-95">
+              <span className=" relative px-5 py-2.5 bg-white text-[#2e3440] rounded-[10px] transition-all duration-300 group-hover:bg-transparent group-hover:text-white flex items-center gap-2">
+                {loading ? "Guardando..." : "Guardar"}
+              </span>
+            </button>
+          </div>
+        </form>
+      </UrgenciaModal>
+
+
+      {/* TABLA DE ESPERA */}
+      <h2 className="text-xl font-semibold mt-12 text-[#37393A]">Lista de espera</h2>
+
+      {ingresos.length === 0 ? (
+        <p className="mt-4 text-center text-gray-500">No hay ingresos pendientes</p>
+      ) : (
+        <ListaEsperaTable ingresos={ingresos} />
+      )}
+
     </div>
   );
 }

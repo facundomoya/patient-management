@@ -1,42 +1,51 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { Activity, User, LogOut } from "lucide-react";
 
 export default function Sidebar() {
-  // const logout = useAuthStore((s) => s.logout);
-
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <aside className="w-56 bg-white shadow p-4">
-        <h2 className="font-bold text-lg">Panel Admin</h2>
+    <div className="bg-[#E8EEF2] min-h-screen">
 
-        <nav className="mt-4 flex flex-col gap-2 text-sm">
+      {/* SIDEBAR FIJO */}
+      <aside className="fixed left-0 top-0 h-screen w-60 bg-[#37393A] text-white shadow-xl p-5 flex flex-col">
+        <h2 className="font-bold text-xl tracking-wide">Panel Admin</h2>
+
+        <nav className="mt-8 flex flex-col gap-2 text-sm">
           <NavLink
             to="/urgencia"
             className={({ isActive }) =>
-              `rounded-lg px-3 py-2 transition hover:text-black ${isActive ? "bg-gray-100 font-semibold text-black" : "text-gray-600"}`
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition
+              ${isActive 
+                ? "bg-[#77B6EA]/20 border-l-4 border-[#77B6EA] text-white font-semibold" 
+                : "text-gray-300 hover:bg-white/10"}`
             }
           >
+            <Activity size={18} />
             Urgencias
           </NavLink>
+
           <NavLink
             to="/paciente"
             className={({ isActive }) =>
-              `rounded-lg px-3 py-2 transition hover:text-black ${isActive ? "bg-gray-100 font-semibold text-black" : "text-gray-600"}`
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition
+              ${isActive 
+                ? "bg-[#77B6EA]/20 border-l-4 border-[#77B6EA] text-white font-semibold" 
+                : "text-gray-300 hover:bg-white/10"}`
             }
           >
+            <User size={18} />
             Pacientes
           </NavLink>
         </nav>
 
-        <button
-          // onClick={logout}
-          className="mt-10 text-red-600 font-semibold text-sm"
-        >
+        {/* BOTÓN LOGOUT Arriba del borde inferior */}
+        <button className="mt-auto flex items-center gap-2 text-red-400 hover:text-red-300 transition">
+          <LogOut size={18} />
           Cerrar sesión
         </button>
       </aside>
 
-      <main className="flex-1 p-6">
-        {/* Acá se renderiza Paciente u otras rutas hijas */}
+      {/* CONTENIDO PRINCIPAL DESPLAZABLE */}
+      <main className="ml-60 min-h-screen p-6 overflow-y-auto">
         <Outlet />
       </main>
     </div>
