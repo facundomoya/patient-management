@@ -4,7 +4,7 @@ on:
   # 1) Cuando se abre / actualiza un PR hacia la rama principal
   pull_request:
     branches:
-      - main
+      - master
 
   # 2) Ejecución manual desde la pestaña "Actions"
   workflow_dispatch:
