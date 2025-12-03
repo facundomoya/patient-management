@@ -1,3 +1,5 @@
+package org.example.steps;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 import static java.lang.Integer.parseInt;
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ModuloUrgenciasNuevoStepDefinitions {
 

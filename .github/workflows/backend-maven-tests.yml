@@ -22,13 +22,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Configurar JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'   
           java-version: '21'        
           cache: 'maven'
 
-      - name: Run Maven tests
+      - name: Correr test con Maven
         run: mvn -B clean test
  

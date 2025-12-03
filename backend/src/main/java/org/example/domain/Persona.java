@@ -1,6 +1,6 @@
 package org.example.domain;
 
-import org.example.domain.Exceptions.DomainException;
+
 
 public class Persona {
     private String cuil;

@@ -1,3 +1,4 @@
+@urgencias
 Feature: Registro de ingresos en el modulo de urgencias
 
   Como enfermera
