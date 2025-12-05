@@ -83,7 +83,7 @@ export default function Login() {
           <p className="text-sm font-semibold text-blue-900 mb-2">Usuarios de prueba:</p>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Enfermera: enfermera20433365772@clinica.com / password123</li>
-            <li>• Médico: medico20345678901@clinica.com / password123</li>
+            <li>• Médico: medico20433365772@clinica.com / password123</li>
           </ul>
         </div>
       </div>
