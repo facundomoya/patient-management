@@ -4,6 +4,13 @@ import org.example.app.AltaEnfermeraService;
 import org.example.app.AltaMedicoService;
 import org.example.app.AltaPacienteService;
 import org.example.app.ServicioUrgencias;
+import org.example.app.ModuloReclamo;
+import org.example.app.interfaces.RepositorioIngresos;
+import org.example.app.interfaces.RepositorioObrasSociales;
+import org.example.app.interfaces.RepositorioPacientes;
+import org.example.infrastructure.RepositorioIngresosEnMemoria;
+import org.example.infrastructure.RepositorioObrasSocialesEnMemoria;
+import org.example.infrastructure.RepositorioPacientesEnMemoria;
 import org.example.app.interfaces.RepositorioEnfermeras;
 import org.example.app.interfaces.RepositorioMedicos;
 import org.example.app.interfaces.RepositorioObrasSociales;
@@ -34,6 +41,8 @@ public class AppConfig {
     }
 
     @Bean
+    public RepositorioIngresos repositorioIngresos() {
+        return new RepositorioIngresosEnMemoria();
     public RepositorioEnfermeras repositorioEnfermeras() {
         // Implementación en memoria
         return new RepositorioEnfermerasEnMemoria();
@@ -94,6 +103,13 @@ public class AppConfig {
     }
 
     @Bean
+    public ServicioUrgencias servicioUrgencias(RepositorioPacientes repoPacientes, RepositorioIngresos repoIngresos){
+     return new ServicioUrgencias(repoPacientes, repoIngresos);
+    }
+
+    @Bean
+    public ModuloReclamo moduloReclamo(RepositorioIngresos repoIngresos) {
+        return new ModuloReclamo(repoIngresos);
     public AltaEnfermeraService altaEnfermeraService(
             RepositorioEnfermeras repoEnfermeras
     ) {
@@ -105,10 +121,5 @@ public class AppConfig {
             RepositorioMedicos repoMedicos
     ) {
         return new AltaMedicoService(repoMedicos);
-    }
-
-    @Bean
-    public ServicioUrgencias servicioUrgencias(RepositorioPacientes repoPacientes){
-     return new ServicioUrgencias(repoPacientes);
     }
 }
