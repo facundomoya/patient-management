@@ -18,24 +18,19 @@ public class RepositorioPacientesEnMemoria implements RepositorioPacientes {
     }
 
     private void inicializarDatosMock() {
-        // ⚠ IMPORTANTE:
-        // Asegurate de que estos CUILs respeten el formato que valida tu Guard.cuilValido(...)
-        // Si tu Guard espera 11 dígitos sin guiones, usá "20123456789"
-        // Si espera con guiones, usá "20-12345678-9", etc.
 
-        // Paciente 1: con obra social
         Domicilio dom1 = new Domicilio("Av. Libertador", 1234, "San Miguel de Tucumán");
         ObraSocial os1 = new ObraSocial("OSDE", "OSDE");
         Afiliacion afil1 = new Afiliacion(os1, "12345678");
         Paciente p1 = new Paciente(
-                "20-43336577-2",   // ajustá al formato que acepte tu Guard
+                "20-43336577-2",   // segun el Guard
                 "Santiago Joaquin",
-                "Martin Peñalosa",
+                "Martin Peñaloza",
                 dom1,
                 afil1
         );
 
-        // Paciente 2: con obra social
+
         Domicilio dom2 = new Domicilio("Av. Peron", 1000, "Yerba Buena");
         ObraSocial os2 = new ObraSocial("OSDE", "OSDE");
         Afiliacion afil2 = new Afiliacion(os2, "11345668");

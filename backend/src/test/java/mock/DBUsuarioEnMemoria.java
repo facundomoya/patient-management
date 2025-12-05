@@ -23,4 +23,8 @@ public class DBUsuarioEnMemoria implements UsuarioRepositorio {
 
     @Override public boolean existePorEnfermera(String cuil) { return porEnfermera.contains(cuil); }
     @Override public boolean existePorMedico(String cuil)    { return porMedico.contains(cuil); }
+    
+    @Override public List<Usuario> listarTodos() {
+        return new ArrayList<>(porEmail.values());
+    }
 }

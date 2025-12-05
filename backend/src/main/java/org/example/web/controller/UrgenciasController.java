@@ -2,7 +2,10 @@
 package org.example.web.controller;
 
 import org.example.app.ServicioUrgencias;
+import org.example.auth.domain.Usuario;
+import org.example.auth.ports.UsuarioRepositorio;
 import org.example.domain.Enfermera;
+import org.example.domain.Exceptions.DomainException;
 import org.example.domain.Ingreso;
 import org.example.domain.NivelEmergencia;
 import org.example.web.dto.IngresoDTO;
@@ -21,20 +24,37 @@ import java.util.stream.Collectors;
 public class UrgenciasController {
 
     private final ServicioUrgencias servicioUrgencias;
+    private final UsuarioRepositorio usuarioRepositorio;
 
-    public UrgenciasController(ServicioUrgencias servicioUrgencias) {
+    public UrgenciasController(ServicioUrgencias servicioUrgencias,
+                               UsuarioRepositorio usuarioRepositorio) {
         this.servicioUrgencias = servicioUrgencias;
+        this.usuarioRepositorio = usuarioRepositorio;
     }
 
     @PostMapping
-    public ResponseEntity<?> registrarUrgencia(@RequestBody RegistrarUrgenciaRequest req) {
+    public ResponseEntity<?> registrarUrgencia(
+            @RequestBody RegistrarUrgenciaRequest req,
+            @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
         try {
-            // Enfermera de la atención
-            Enfermera enfermera = new Enfermera(
-                    req.getEnfermeraNombre(),
-                    req.getEnfermeraApellido(),
-                    req.getEnfermeraCuil()
-            );
+            // Validar que el usuario esté autenticado
+            if (userEmail == null || userEmail.isBlank()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Usuario no autenticado");
+            }
+
+            // Obtener el usuario de la sesión
+            Usuario usuario = usuarioRepositorio.buscarPorEmail(userEmail)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Validar que sea enfermera
+            if (!usuario.esEnfermera()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Solo las enfermeras pueden registrar urgencias");
+            }
+
+            // Obtener la enfermera del usuario
+            Enfermera enfermera = usuario.getEnfermera();
 
             // Buscar el enum de nivel igual que en los steps de Cucumber
             NivelEmergencia nivel = Arrays.stream(NivelEmergencia.values())
@@ -55,6 +75,8 @@ public class UrgenciasController {
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (DomainException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             // Podés refinar esto según DomainException, etc.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

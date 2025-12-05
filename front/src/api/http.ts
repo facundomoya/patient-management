@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getUsuarioLogueado } from "./auth";
 
 const baseURL =
   import.meta.env.VITE_API_URL?.toString() ||
@@ -10,6 +11,15 @@ export const http = axios.create({
     "Content-Type": "application/json",
   },
   // withCredentials: true, // si necesitás cookies/sesiones
+});
+
+// Interceptor para agregar el header de autenticación
+http.interceptors.request.use((config) => {
+  const usuario = getUsuarioLogueado();
+  if (usuario) {
+    config.headers["X-User-Email"] = usuario.email;
+  }
+  return config;
 });
 
 // Un helper para extraer mensajes del backend (DomainException)

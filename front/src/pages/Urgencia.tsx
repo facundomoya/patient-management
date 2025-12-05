@@ -7,13 +7,11 @@ import {listarIngresosPendientes, registrarUrgencia, type RegistrarUrgenciaDTO, 
 import { extractErrorMessage } from "../api/http";
 import { validarCuil, formatearCuil } from "../utils/cuil";
 import { useCuilInput } from "../hooks/useCuilInput";
+import { getUsuarioLogueado } from "../api/auth";
 
 type FormState = {
   informe: string;
   nivelEmergencia: NivelEmergencia | "";
-
-  enfermeraNombre: string;
-  enfermeraApellido: string;
 
   // SIGNOS VITALES
   temperatura: string;
@@ -26,9 +24,6 @@ type FormState = {
 const initialForm: FormState = {
   informe: "",
   nivelEmergencia: "",
-
-  enfermeraNombre: "",
-  enfermeraApellido: "",
 
   temperatura: "",
   frecuenciaCardiaca: "",
@@ -57,7 +52,6 @@ export default function Urgencia() {
 
   // HOOKS DE CUIL
   const cuilPaciente = useCuilInput("");
-  const cuilEnfermera = useCuilInput("");
 
   function onChange<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -98,16 +92,23 @@ export default function Urgencia() {
     e.preventDefault();
     setLoading(true);
 
-    // VALIDACIÓN CUIL PACIENTE
-    if (!validarCuil(cuilPaciente.value)) {
-      toast.error("El CUIL del paciente es inválido");
+    // Validar que el usuario esté logueado
+    const usuario = getUsuarioLogueado();
+    if (!usuario) {
+      toast.error("Debes iniciar sesión para registrar urgencias");
       setLoading(false);
       return;
     }
 
-    // VALIDACIÓN CUIL ENFERMERA
-    if (!validarCuil(cuilEnfermera.value)) {
-      toast.error("El CUIL de la enfermera es inválido");
+    if (usuario.rol !== "ENFERMERA") {
+      toast.error("Solo las enfermeras pueden registrar urgencias");
+      setLoading(false);
+      return;
+    }
+
+    // VALIDACIÓN CUIL PACIENTE
+    if (!validarCuil(cuilPaciente.value)) {
+      toast.error("El CUIL del paciente es inválido");
       setLoading(false);
       return;
     }
@@ -116,10 +117,6 @@ export default function Urgencia() {
       cuilPaciente: formatearCuil(cuilPaciente.value),
       informe: form.informe.trim(),
       nivelEmergencia: form.nivelEmergencia as NivelEmergencia,
-
-      enfermeraNombre: form.enfermeraNombre.trim(),
-      enfermeraApellido: form.enfermeraApellido.trim(),
-      enfermeraCuil: formatearCuil(cuilEnfermera.value),
 
       temperatura: parseOptionalNumber(form.temperatura),
       frecuenciaCardiaca: parseOptionalNumber(form.frecuenciaCardiaca),
@@ -138,7 +135,6 @@ export default function Urgencia() {
       await cargarIngresos();
       setForm(initialForm);
       cuilPaciente.handleChange("");
-      cuilEnfermera.handleChange("");
       setOpenModal(false);
     } catch (err) {
       const msg = extractErrorMessage(err);
@@ -221,48 +217,6 @@ export default function Urgencia() {
               </select>
             </div>
 
-            {/* CUIL ENFERMERA */}
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-semibold text-gray-700">Enfermera CUIL *</label>
-              <input
-                className={`
-            rounded-2xl px-4 py-3 bg-white/70 
-            border shadow-sm hover:shadow-md
-            focus:ring-2 focus:ring-blue-300
-            outline-none transition-all backdrop-blur-sm
-            ${cuilEnfermera.valido === false ? "border-red-500" : "border-gray-300"}
-            ${cuilEnfermera.valido === true ? "border-green-600" : ""}
-          `}
-                value={cuilEnfermera.value}
-                onChange={(e) => cuilEnfermera.handleChange(e.target.value)}
-                placeholder="XX-XXXXXXXX-X"
-              />
-            </div>
-
-            {/* NOMBRE ENFERMERA */}
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-semibold text-gray-700">Enfermera Nombre *</label>
-              <input
-                className="
-            rounded-2xl px-4 py-3 bg-white/70
-            border border-gray-300 shadow-sm 
-            hover:shadow-md
-            focus:ring-2 focus:ring-blue-300
-            outline-none transition-all backdrop-blur-sm
-          "
-                value={form.enfermeraNombre}
-                onChange={(e) => onChange('enfermeraNombre', e.target.value)}
-              />
-            </div>
-
-            {/* APELLIDO ENFERMERA */}
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-semibold text-gray-700">Enfermera Apellido *</label>
-              <input className="rounded-2xl px-4 py-3 bg-white/70 border border-gray-300 shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-300 outline-none transition-all backdrop-blur-sm"
-                value={form.enfermeraApellido}
-                onChange={(e) => onChange('enfermeraApellido', e.target.value)}
-              />
-            </div>
           </div>
 
           {/* SIGNOS VITALES */}

@@ -5,7 +5,7 @@ import org.example.app.interfaces.RepositorioObrasSociales;
 import org.example.domain.*;
 import org.example.domain.Exceptions.DomainException;
 
-public class AltaPacienteService {
+public class  AltaPacienteService {
 
     private final RepositorioPacientes repoPacientes;
     private final RepositorioObrasSociales repoOS;
