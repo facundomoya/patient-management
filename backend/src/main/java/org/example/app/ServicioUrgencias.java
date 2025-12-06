@@ -1,13 +1,14 @@
 package org.example.app;
 
+import org.example.app.interfaces.RepositorioIngresos;
 import org.example.app.interfaces.RepositorioPacientes;
 import org.example.domain.Enfermera;
 import org.example.domain.Ingreso;
 import org.example.domain.NivelEmergencia;
 import org.example.domain.Paciente;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+//import java.util.ArrayList;
+//import java.util.Comparator;
 import java.util.List;
 
 public class ServicioUrgencias {
@@ -15,13 +16,15 @@ public class ServicioUrgencias {
     //SEGREGACION DE INTERFAZ
     //PATRON ADAPTADOR
     private RepositorioPacientes dbPacientes;
+    private final RepositorioIngresos dbIngresos;
 
-    private final List<Ingreso> listaEspera;
+    //private final List<Ingreso> listaEspera;
 
     //INYECCION DE DEPENDENCIA -> Pruebas
-    public ServicioUrgencias(RepositorioPacientes dbPacientes) {
+    public ServicioUrgencias(RepositorioPacientes dbPacientes, RepositorioIngresos dbIngresos) {
         this.dbPacientes = dbPacientes;
-        this.listaEspera = new ArrayList<>();
+        this.dbIngresos = dbIngresos;
+        //this.listaEspera = new ArrayList<>();
     }
 
 
@@ -48,11 +51,13 @@ public class ServicioUrgencias {
                 frecuenciaSistolica,
                 frecuenciaDiastolica);
 
-        listaEspera.add(ingreso);
-        listaEspera.sort(Ingreso::compareTo);
+        //listaEspera.add(ingreso);
+        //listaEspera.sort(Ingreso::compareTo);
+
+        dbIngresos.guardar(ingreso);
     }
 
     public List<Ingreso> obtenerIngresosPendientes(){
-        return this.listaEspera;
+        return dbIngresos.obtenerPendientes();
     }
 }

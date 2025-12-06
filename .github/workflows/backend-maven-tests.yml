@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - master
+      - desarrollo
 
   # 2) Ejecución manual desde la pestaña "Actions"
   workflow_dispatch:

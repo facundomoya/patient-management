@@ -1,0 +1,39 @@
+package org.example.infrastructure;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.example.app.interfaces.RepositorioIngresos;
+import org.example.domain.Ingreso;
+import org.example.domain.EstadoIngreso;
+
+public class RepositorioIngresosEnMemoria implements RepositorioIngresos{
+
+    private final List<Ingreso> listaEspera = new ArrayList<>();
+
+    @Override
+    public void guardar(Ingreso ingreso){
+        listaEspera.add(ingreso);
+
+        listaEspera.sort(Ingreso::compareTo);
+    }
+
+    @Override
+    public List<Ingreso> obtenerPendientes(){
+        return listaEspera.stream().filter(i -> i.getEstado() == EstadoIngreso.PENDIENTE)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void eliminarDePendientes(Ingreso ingreso){
+        listaEspera.remove(ingreso);
+    }
+
+    @Override
+    public List<Ingreso> obtenerFinalizados(){
+        return listaEspera.stream().filter(i -> i.getEstado() == EstadoIngreso.FINALIZADO)
+                .collect(Collectors.toList());
+    }
+
+}

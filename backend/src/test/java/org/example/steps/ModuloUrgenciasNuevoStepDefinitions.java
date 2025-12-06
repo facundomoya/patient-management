@@ -3,7 +3,7 @@ package org.example.steps;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-
+import mock.DBIngresoEnMemoria;
 import mock.DBPacienteEnMemoria;
 import org.example.app.ServicioUrgencias;
 import org.example.domain.*;
@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ModuloUrgenciasNuevoStepDefinitions {
 
     private final DBPacienteEnMemoria dbMockeada;
+    private final DBIngresoEnMemoria dbIngMockeada;
     private final ServicioUrgencias servicioUrgencias;
 
     private Enfermera enfermera;       // Objeto enfermera usado por el servicio
@@ -27,7 +28,8 @@ public class ModuloUrgenciasNuevoStepDefinitions {
 
     public ModuloUrgenciasNuevoStepDefinitions() {
         this.dbMockeada = new DBPacienteEnMemoria();
-        this.servicioUrgencias = new ServicioUrgencias(dbMockeada);
+        this.dbIngMockeada = new DBIngresoEnMemoria();
+        this.servicioUrgencias = new ServicioUrgencias(dbMockeada, dbIngMockeada);
     }
 
     // Background: enfermera con columnas: CUIL | Nombre | Apellido

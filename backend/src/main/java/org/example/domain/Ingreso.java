@@ -44,6 +44,10 @@ public class Ingreso implements Comparable<Ingreso>{
         return this.paciente.getCuil();
     }
 
+    public void setEstado(EstadoIngreso estado) {
+    this.estado = estado;
+}
+
     @Override
     public int compareTo(Ingreso o) {
         int porNivel = this.nivelEmergencia.compararCon(o.nivelEmergencia); // usa tu compararCon

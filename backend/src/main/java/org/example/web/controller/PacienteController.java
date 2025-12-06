@@ -57,7 +57,7 @@ public class PacienteController {
     // GET: listar todos los pacientes
     @GetMapping
     public ResponseEntity<List<PacienteDTO>> listarPacientes() {
-        List<Paciente> pacientes = repositorioPacientes.listarTodos();
+        List<Paciente> pacientes = altaPacienteService.listarPacientes();
         List<PacienteDTO> dtos = pacientes.stream()
                 .map(PacienteMapper::toDTO)
                 .collect(Collectors.toList());

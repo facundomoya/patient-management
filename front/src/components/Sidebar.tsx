@@ -1,7 +1,9 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { Activity, User, LogOut } from "lucide-react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Activity, User, LogOut, Stethoscope, Heart } from "lucide-react";
+import { logout } from "../api/auth";
 
 export default function Sidebar() {
+  const navigate = useNavigate();
   return (
     <div className="bg-[#E8EEF2] min-h-screen">
 
@@ -35,10 +37,43 @@ export default function Sidebar() {
             <User size={18} />
             Pacientes
           </NavLink>
+
+          <NavLink
+            to="/enfermera"
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition
+              ${isActive 
+                ? "bg-[#77B6EA]/20 border-l-4 border-[#77B6EA] text-white font-semibold" 
+                : "text-gray-300 hover:bg-white/10"}`
+            }
+          >
+            <Heart size={18} />
+            Enfermeras
+          </NavLink>
+
+          <NavLink
+            to="/medico"
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition
+              ${isActive 
+                ? "bg-[#77B6EA]/20 border-l-4 border-[#77B6EA] text-white font-semibold" 
+                : "text-gray-300 hover:bg-white/10"}`
+            }
+          >
+            <Stethoscope size={18} />
+            Médicos
+          </NavLink>
         </nav>
 
         {/* BOTÓN LOGOUT Arriba del borde inferior */}
-        <button className="mt-auto flex items-center gap-2 text-red-400 hover:text-red-300 transition">
+        <button
+          type="button"
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          className="mt-auto flex items-center gap-2 text-red-400 hover:text-red-300 transition"
+        >
           <LogOut size={18} />
           Cerrar sesión
         </button>

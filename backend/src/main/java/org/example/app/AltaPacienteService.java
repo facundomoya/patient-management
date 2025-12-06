@@ -1,11 +1,14 @@
 package org.example.app;
 
 import org.example.app.interfaces.RepositorioPacientes;
+
+import java.util.List;
+
 import org.example.app.interfaces.RepositorioObrasSociales;
 import org.example.domain.*;
 import org.example.domain.Exceptions.DomainException;
 
-public class AltaPacienteService {
+public class  AltaPacienteService {
 
     private final RepositorioPacientes repoPacientes;
     private final RepositorioObrasSociales repoOS;
@@ -45,6 +48,10 @@ public class AltaPacienteService {
         Paciente p = new Paciente(cuil, nombre, apellido, domicilio, afiliacion);
         repoPacientes.guardarPaciente(p);
         return p;
+    }
+
+    public List<Paciente> listarPacientes() {
+        return repoPacientes.listarTodos();
     }
 
     private static boolean isBlank(String s) { return s == null || s.isBlank(); }

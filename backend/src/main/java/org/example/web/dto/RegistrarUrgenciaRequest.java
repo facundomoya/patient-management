@@ -5,10 +5,6 @@ public class RegistrarUrgenciaRequest {
 
     private String cuilPaciente;
 
-    private String enfermeraCuil;
-    private String enfermeraNombre;
-    private String enfermeraApellido;
-
     private String informe;
     private String nivelEmergencia; // por ejemplo: "Rojo", "Amarillo", etc. según tu enum
 
@@ -27,30 +23,6 @@ public class RegistrarUrgenciaRequest {
 
     public void setCuilPaciente(String cuilPaciente) {
         this.cuilPaciente = cuilPaciente;
-    }
-
-    public String getEnfermeraCuil() {
-        return enfermeraCuil;
-    }
-
-    public void setEnfermeraCuil(String enfermeraCuil) {
-        this.enfermeraCuil = enfermeraCuil;
-    }
-
-    public String getEnfermeraNombre() {
-        return enfermeraNombre;
-    }
-
-    public void setEnfermeraNombre(String enfermeraNombre) {
-        this.enfermeraNombre = enfermeraNombre;
-    }
-
-    public String getEnfermeraApellido() {
-        return enfermeraApellido;
-    }
-
-    public void setEnfermeraApellido(String enfermeraApellido) {
-        this.enfermeraApellido = enfermeraApellido;
     }
 
     public String getInforme() {

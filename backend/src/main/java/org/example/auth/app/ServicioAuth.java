@@ -1,11 +1,14 @@
 package org.example.auth.app;
 
+import org.example.app.interfaces.RepositorioEnfermeras;
+import org.example.app.interfaces.RepositorioMedicos;
 import org.example.auth.domain.Usuario;
 import org.example.auth.ports.*;
 import org.example.domain.Enfermera;
 import org.example.domain.Medico;
 import org.example.domain.Exceptions.DomainException;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class ServicioAuth {
@@ -15,13 +18,13 @@ public class ServicioAuth {
 
     private final UsuarioRepositorio usuarios;
     private final PasswordHasher hasher;
-    private final EnfermeraRepositorio enfRepo;
-    private final MedicoRepositorio medRepo;
+    private final RepositorioEnfermeras enfRepo;
+    private final RepositorioMedicos medRepo;
 
     public ServicioAuth(UsuarioRepositorio usuarios,
                         PasswordHasher hasher,
-                        EnfermeraRepositorio enfRepo,
-                        MedicoRepositorio medRepo) {
+                        RepositorioEnfermeras enfRepo,
+                        RepositorioMedicos medRepo) {
         this.usuarios = usuarios;
         this.hasher = hasher;
         this.enfRepo = enfRepo;
@@ -34,7 +37,7 @@ public class ServicioAuth {
         validarPassword(password);
         validarCuil(cuilEnfermera);
 
-        Enfermera e = enfRepo.buscarPorCuil(cuilEnfermera)
+        Enfermera e = enfRepo.buscarEnfermeraPorCuil(cuilEnfermera)
                 .orElseThrow(() -> DomainException.validation("Enfermera inexistente"));
 
         if (usuarios.existePorEnfermera(cuilEnfermera)) {
@@ -51,7 +54,7 @@ public class ServicioAuth {
         validarEmail(email);
         validarPassword(password);
 
-        Medico m = medRepo.buscarPorCuil(cuilMedico)
+        Medico m = medRepo.buscarMedicoPorCuil(cuilMedico)
                 .orElseThrow(() -> DomainException.validation("Médico inexistente"));
 
         if (usuarios.existePorMedico(cuilMedico)) {
@@ -61,6 +64,42 @@ public class ServicioAuth {
         String hash = hasher.hash(password);
         Usuario u = Usuario.paraMedico(email, hash, m);
         return usuarios.guardar(u);
+    }
+
+    public void inicializarUnUsuario(String cuil) {
+        // Intentar crear usuario para enfermera (si existe)
+        try {
+            Optional<Enfermera> enfermeraOpt = enfRepo.buscarEnfermeraPorCuil(cuil);
+            if (enfermeraOpt.isPresent()) {
+                Enfermera enfermera = enfermeraOpt.get();
+                String digits = enfermera.getCuil().replaceAll("[^0-9]", "");
+                String email = "enfermera" + digits + "@clinica.com";
+                try {
+                    registrarParaEnfermera(email, "password123", enfermera.getCuil());
+                } catch (Exception e) {
+                    // Ignorar si ya existe el usuario u otros errores al registrar
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error buscando/enregistrando enfermera para cuil " + cuil + ": " + e.getMessage());
+        }
+
+        // Intentar crear usuario para medico (si existe)
+        try {
+            Optional<Medico> medicoOpt = medRepo.buscarMedicoPorCuil(cuil);
+            if (medicoOpt.isPresent()) {
+                Medico medico = medicoOpt.get();
+                String digits = medico.getCuil().replaceAll("[^0-9]", "");
+                String email = "medico" + digits + "@clinica.com";
+                try {
+                    registrarParaMedico(email, "password123", medico.getCuil());
+                } catch (Exception e) {
+                    // Ignorar si ya existe el usuario u otros errores al registrar
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error buscando/enregistrando medico para cuil " + cuil + ": " + e.getMessage());
+        }
     }
 
     // ===== Login =====
@@ -88,3 +127,4 @@ public class ServicioAuth {
             throw DomainException.validation("CUIL es obligatorio");
     }
 }
+

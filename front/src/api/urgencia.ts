@@ -11,9 +11,6 @@ export interface RegistrarUrgenciaDTO {
   cuilPaciente: string;
   informe: string;
   nivelEmergencia: NivelEmergencia;
-  enfermeraCuil: string;
-  enfermeraNombre: string;
-  enfermeraApellido: string;
   temperatura?: number | null;
   frecuenciaCardiaca?: number | null;
   frecuenciaRespiratoria?: number | null;
