@@ -9,16 +9,11 @@ import org.example.app.ModuloRegistroAtencion;
 import org.example.app.interfaces.RepositorioIngresos;
 import org.example.app.interfaces.RepositorioObrasSociales;
 import org.example.app.interfaces.RepositorioPacientes;
-import org.example.infrastructure.RepositorioIngresosEnMemoria;
-import org.example.infrastructure.RepositorioObrasSocialesEnMemoria;
-import org.example.infrastructure.RepositorioPacientesEnMemoria;
 import org.example.app.interfaces.RepositorioAtenciones;
 import org.example.app.interfaces.RepositorioEnfermeras;
 import org.example.app.interfaces.RepositorioMedicos;
 import org.example.auth.BCryptHasher;
 import org.example.auth.app.ServicioAuth;
-import org.example.auth.ports.EnfermeraRepositorio;
-import org.example.auth.ports.MedicoRepositorio;
 import org.example.auth.ports.PasswordHasher;
 import org.example.auth.ports.UsuarioRepositorio;
 import org.example.infrastructure.*;
@@ -67,15 +62,15 @@ public class AppConfig {
         return new RepositorioUsuariosEnMemoria();
     }
 
-    @Bean
-    public EnfermeraRepositorio enfermeraRepositorio(RepositorioEnfermeras repoEnfermeras) {
-        return new EnfermeraRepositorioAdapter(repoEnfermeras);
-    }
+    // @Bean
+    // public EnfermeraRepositorio enfermeraRepositorio(RepositorioEnfermeras repoEnfermeras) {
+    //     return new EnfermeraRepositorioAdapter(repoEnfermeras);
+    // }
 
-    @Bean
-    public MedicoRepositorio medicoRepositorio(RepositorioMedicos repoMedicos) {
-        return new MedicoRepositorioAdapter(repoMedicos);
-    }
+    // @Bean
+    // public MedicoRepositorio medicoRepositorio(RepositorioMedicos repoMedicos) {
+    //     return new MedicoRepositorioAdapter(repoMedicos);
+    // }
 
     @Bean
     public PasswordHasher passwordHasher() {
@@ -87,8 +82,8 @@ public class AppConfig {
     public ServicioAuth servicioAuth(
             UsuarioRepositorio repoUsuarios,
             PasswordHasher hasher,
-            EnfermeraRepositorio enfRepo,
-            MedicoRepositorio medRepo
+            RepositorioEnfermeras enfRepo,
+            RepositorioMedicos medRepo
     ) {
         return new ServicioAuth(repoUsuarios, hasher, enfRepo, medRepo);
     }

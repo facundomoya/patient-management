@@ -1,5 +1,7 @@
 package org.example.auth.app;
 
+import org.example.app.interfaces.RepositorioEnfermeras;
+import org.example.app.interfaces.RepositorioMedicos;
 import org.example.auth.domain.Usuario;
 import org.example.auth.ports.*;
 import org.example.domain.Enfermera;
@@ -15,13 +17,13 @@ public class ServicioAuth {
 
     private final UsuarioRepositorio usuarios;
     private final PasswordHasher hasher;
-    private final EnfermeraRepositorio enfRepo;
-    private final MedicoRepositorio medRepo;
+    private final RepositorioEnfermeras enfRepo;
+    private final RepositorioMedicos medRepo;
 
     public ServicioAuth(UsuarioRepositorio usuarios,
                         PasswordHasher hasher,
-                        EnfermeraRepositorio enfRepo,
-                        MedicoRepositorio medRepo) {
+                        RepositorioEnfermeras enfRepo,
+                        RepositorioMedicos medRepo) {
         this.usuarios = usuarios;
         this.hasher = hasher;
         this.enfRepo = enfRepo;
@@ -34,7 +36,7 @@ public class ServicioAuth {
         validarPassword(password);
         validarCuil(cuilEnfermera);
 
-        Enfermera e = enfRepo.buscarPorCuil(cuilEnfermera)
+        Enfermera e = enfRepo.buscarEnfermeraPorCuil(cuilEnfermera)
                 .orElseThrow(() -> DomainException.validation("Enfermera inexistente"));
 
         if (usuarios.existePorEnfermera(cuilEnfermera)) {
@@ -51,7 +53,7 @@ public class ServicioAuth {
         validarEmail(email);
         validarPassword(password);
 
-        Medico m = medRepo.buscarPorCuil(cuilMedico)
+        Medico m = medRepo.buscarMedicoPorCuil(cuilMedico)
                 .orElseThrow(() -> DomainException.validation("Médico inexistente"));
 
         if (usuarios.existePorMedico(cuilMedico)) {
