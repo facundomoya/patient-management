@@ -8,6 +8,7 @@ import Atenciones from "../pages/Atenciones";
 import Login from "../pages/Login";
 import { getUsuarioLogueado } from "../api/auth";
 import Medico from "../pages/Medico";
+import type { JSX } from "react";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   const usuario = getUsuarioLogueado();

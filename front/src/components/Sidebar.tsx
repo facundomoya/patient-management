@@ -16,12 +16,11 @@ export default function Sidebar() {
 
       {/* SIDEBAR FIJO */}
       <aside className="fixed left-0 top-0 h-screen w-60 bg-[#37393A] text-white shadow-xl p-5 flex flex-col">
-        <h2 className="font-bold text-xl tracking-wide">Panel Admin</h2>
+        <h2 className="font-bold text-xl tracking-wide">Clinica Emergencia</h2>
 
         {/* Información del usuario logueado */}
         {usuario && (
           <div className="mt-4 p-3 bg-[#77B6EA]/20 rounded-lg border border-[#77B6EA]/30">
-            <p className="text-xs text-gray-400 uppercase tracking-wide">Usuario</p>
             <p className="text-sm font-semibold mt-1">
               {usuario.nombre} {usuario.apellido}
             </p>
@@ -70,7 +69,7 @@ export default function Sidebar() {
                 }
               >
                 <Heart size={18} />
-                Enfermeras
+                Lista Enfermeras
               </NavLink>
             </>
           )}
@@ -87,7 +86,7 @@ export default function Sidebar() {
                 }
               >
                 <Stethoscope size={18} />
-                Atención Médica
+                Reclamo pacientes
               </NavLink>
               <NavLink
                 to="/atenciones"
@@ -111,7 +110,7 @@ export default function Sidebar() {
                 }
               >
                 <Stethoscope size={18} />
-                Médicos
+                Lista Médicos
               </NavLink>
             </>
           )}
