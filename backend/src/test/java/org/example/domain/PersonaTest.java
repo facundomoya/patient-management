@@ -18,14 +18,14 @@ class PersonaTest {
     void nombre_blanco_lanza() {
         assertThatThrownBy(() -> new Persona("20-40902338-0", "   ", "Moya"))
                 .isInstanceOf(DomainException.class)
-                .hasMessageContaining("nombre");
+                .hasMessageContaining("Nombre");
     }
 
     @Test
     void apellido_blanco_lanza() {
         assertThatThrownBy(() -> new Persona("20-40902338-0", "Facundo", "   "))
                 .isInstanceOf(DomainException.class)
-                .hasMessageContaining("apellido");
+                .hasMessageContaining("Apellido");
     }
 
     @Test

@@ -11,10 +11,10 @@ public class FrecuenciaRespiratoria extends Frecuencia{
     }
 
 
-    //70.0 rpm
+    //70.0
     @Override
     public String getValorFormateado() {
-        return String.format("%.1f rpm",this.value);
+        return String.format("%.1f",this.value);
     }
 
 }

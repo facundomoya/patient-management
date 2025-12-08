@@ -8,6 +8,8 @@ import { extractErrorMessage } from "../api/http";
 import { validarCuil, formatearCuil } from "../utils/cuil";
 import { useCuilInput } from "../hooks/useCuilInput";
 import { getUsuarioLogueado } from "../api/auth";
+import { listPacientes } from "../api/pacientes";
+import { Link } from "react-router-dom";
 
 type FormState = {
   informe: string;
@@ -54,6 +56,10 @@ export default function Urgencia() {
   // HOOKS DE CUIL
   const cuilPaciente = useCuilInput("");
 
+  // Nuevo: estado para si el CUIL existe en el sistema
+  const [cuilExiste, setCuilExiste] = useState<boolean | null>(null);
+  const [checkingCuil, setCheckingCuil] = useState(false);
+
   function onChange<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
@@ -74,6 +80,37 @@ export default function Urgencia() {
       console.error(e);
     }
   }
+
+  /* ----------------------------------------
+     Chequear existencia del paciente cuando termine de ingresar el CUIL
+     (se ejecuta mientras se está llenando, no solo al enviar)
+  ---------------------------------------- */
+  useEffect(() => {
+    // Solo cuando el hook indica que el formato es válido
+    if (cuilPaciente.valido === true) {
+      let mounted = true;
+      (async () => {
+        try {
+          setCheckingCuil(true);
+          const pacientes = await listPacientes();
+          const formatted = formatearCuil(cuilPaciente.value);
+          const exists = pacientes.some((p) => p.cuil === formatted);
+          if (mounted) setCuilExiste(exists);
+        } catch (err) {
+          console.error("Error al verificar CUIL:", err);
+          if (mounted) setCuilExiste(null);
+        } finally {
+          if (mounted) setCheckingCuil(false);
+        }
+      })();
+      return () => {
+        mounted = false;
+      };
+    } else {
+      // si no está completo o inválido, no mostramos el mensaje de "no existe"
+      setCuilExiste(null);
+    }
+  }, [cuilPaciente.value, cuilPaciente.valido]);
 
   /* ----------------------------------------
      Parse numérico opcional
@@ -114,6 +151,13 @@ export default function Urgencia() {
       return;
     }
 
+    // VALIDACIÓN: que exista en el sistema
+    if (cuilExiste === false) {
+      toast.error("El CUIL del paciente no figura registrado en el sistema");
+      setLoading(false);
+      return;
+    }
+
     const payload: RegistrarUrgenciaDTO = {
       cuilPaciente: formatearCuil(cuilPaciente.value),
       informe: form.informe.trim(),
@@ -149,6 +193,9 @@ export default function Urgencia() {
      RENDER
   ---------------------------------------- */
 
+  const isInvalid = cuilPaciente.valido === false || cuilExiste === false;
+  const isValid = cuilPaciente.valido === true && cuilExiste !== false;
+
   return (
     <div className="mx-auto max-w-6xl p-6">
 
@@ -171,21 +218,34 @@ export default function Urgencia() {
 
             {/* CUIL PACIENTE */}
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-semibold text-gray-700">CUIL paciente *</label>
+              <div className="flex items-start justify-between">
+                <label className="text-sm font-semibold text-gray-700">CUIL paciente *</label>
+                <Link to="/paciente" className="text-sm text-blue-600 hover:underline">
+                  Ir a carga paciente
+                </Link>
+              </div>
+
               <input
                 className={`
-            rounded-2xl px-4 py-3 bg-white/70
-            border shadow-sm
-            focus:ring-2 focus:ring-blue-300
-            outline-none transition-all backdrop-blur-sm
-            hover:shadow-md
-            ${cuilPaciente.valido === false ? "border-red-500" : "border-gray-300"}
-            ${cuilPaciente.valido === true ? "border-green-600" : ""}
-          `}
+                  rounded-2xl px-4 py-3 bg-white/70
+                  border shadow-sm
+                  focus:ring-2 focus:ring-blue-300
+                  outline-none transition-all backdrop-blur-sm
+                  hover:shadow-md
+                  ${isInvalid ? "border-red-500" : "border-gray-300"}
+                  ${isValid ? "border-green-600" : ""}
+                `}
                 value={cuilPaciente.value}
                 onChange={(e) => cuilPaciente.handleChange(e.target.value)}
                 placeholder="XX-XXXXXXXX-X"
               />
+              {cuilPaciente.valido === false && (
+                <p className="text-sm text-red-600 mt-1">El CUIL ingresado no es valido</p>
+              )}
+              {/* Mensaje cuando no existe en el sistema */}
+              {cuilExiste === false && (
+                <p className="text-sm text-red-600 mt-1">El CUIL ingresado no figura registrado en el sistema</p>
+              )}
             </div>
 
             {/* INFORME */}
