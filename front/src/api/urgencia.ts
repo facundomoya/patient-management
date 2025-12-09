@@ -16,6 +16,7 @@ export interface RegistrarUrgenciaDTO {
   frecuenciaRespiratoria?: number | null;
   tensionSistolica?: number | null;
   tensionDiastolica?: number | null;
+  enfermeroCuil?: string; // opcional
 }
 
 export type IngresoUrgencia = {
@@ -30,6 +31,7 @@ export type IngresoUrgencia = {
   tensionSistolica: string | number | null;
   tensionDiastolica: string | number | null;
   fechaIngreso: string;
+   enfermeroCuil?: string; // nuevo campo de respuesta
 };
 
 export async function registrarUrgencia(payload: RegistrarUrgenciaDTO): Promise<void> {

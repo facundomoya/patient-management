@@ -6,7 +6,6 @@ import org.example.auth.ports.UsuarioRepositorio;
 import org.example.app.interfaces.RepositorioIngresos;
 import org.example.domain.Exceptions.DomainException;
 import org.example.domain.Ingreso;
-import org.example.domain.Medico;
 import org.example.web.dto.IngresoDTO;
 import org.example.web.mapper.IngresoMapper;
 import org.springframework.http.HttpStatus;

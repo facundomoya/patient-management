@@ -2,7 +2,6 @@ package org.example.app;
 
 import java.util.List;
 
-import org.example.app.interfaces.RepositorioAtenciones;
 import org.example.app.interfaces.RepositorioIngresos;
 import org.example.domain.EstadoIngreso;
 import org.example.domain.Ingreso;

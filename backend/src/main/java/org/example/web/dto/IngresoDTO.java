@@ -16,6 +16,7 @@ public class IngresoDTO {
     private String tensionSistolica; //mal
     private String tensionDiastolica; // mal
     private String fechaIngreso; // Fecha de ingreso en formato ISO
+    private String enfermeroCuil;
 
     public IngresoDTO() {
     }
@@ -108,5 +109,13 @@ public class IngresoDTO {
 
     public void setFechaIngreso(String fechaIngreso) {
         this.fechaIngreso = fechaIngreso;
+    }
+
+    public String getEnfermeroCuil() {
+        return enfermeroCuil;
+    }
+
+    public void setEnfermeroCuil(String enfermeroCuil) {
+        this.enfermeroCuil = enfermeroCuil;
     }
 }
