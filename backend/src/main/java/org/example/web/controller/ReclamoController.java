@@ -4,8 +4,11 @@ import org.example.app.ModuloReclamo;
 import org.example.auth.domain.Usuario;
 import org.example.auth.ports.UsuarioRepositorio;
 import org.example.app.interfaces.RepositorioIngresos;
+import org.example.app.interfaces.RepositorioAtenciones;
+import org.example.domain.Atencion;
 import org.example.domain.Exceptions.DomainException;
 import org.example.domain.Ingreso;
+import org.example.domain.Medico;
 import org.example.web.dto.IngresoDTO;
 import org.example.web.mapper.IngresoMapper;
 import org.springframework.http.HttpStatus;
@@ -22,37 +25,45 @@ public class ReclamoController {
     private final ModuloReclamo moduloReclamo;
     private final UsuarioRepositorio usuarioRepositorio;
     private final RepositorioIngresos repositorioIngresos;
+    private final RepositorioAtenciones repositorioAtenciones;
 
     public ReclamoController(ModuloReclamo moduloReclamo, 
                              UsuarioRepositorio usuarioRepositorio,
-                             RepositorioIngresos repositorioIngresos) {
+                             RepositorioIngresos repositorioIngresos,
+                             RepositorioAtenciones repositorioAtenciones) {
         this.moduloReclamo = moduloReclamo;
         this.usuarioRepositorio = usuarioRepositorio;
         this.repositorioIngresos = repositorioIngresos;
+        this.repositorioAtenciones = repositorioAtenciones;
     }
 
     @PostMapping
     public ResponseEntity<?> reclamarSiguientePaciente(
             @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
         try {
-            // Validar que el usuario esté autenticado
+            // Validar que el usuario este autenticado
             if (userEmail == null || userEmail.isBlank()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Usuario no autenticado");
             }
 
-            // Obtener el usuario de la sesión
+            // Obtener el usuario de la sesion
             Usuario usuario = usuarioRepositorio.buscarPorEmail(userEmail)
                     .orElseThrow(() -> new DomainException("Usuario no encontrado"));
 
-            // Validar que sea médico
+            // Validar que sea medico
             if (!usuario.esMedico()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("Solo los médicos pueden reclamar pacientes");
+                        .body("Solo los medicos pueden reclamar pacientes");
             }
 
             // Reclamar siguiente paciente (cambia estado a EN_PROCESO)
-            Ingreso ingreso = moduloReclamo.reclamarSiguientePaciente();
+            Medico medico = usuario.getMedico();
+            if (medico == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("El usuario no tiene asociada una entidad de medico");
+            }
+            Ingreso ingreso = moduloReclamo.reclamarSiguientePaciente(medico);
             
             // Convertir a DTO
             IngresoDTO dto = IngresoMapper.toDTO(ingreso);
@@ -72,32 +83,36 @@ public class ReclamoController {
     public ResponseEntity<?> obtenerPacienteEnAtencion(
             @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
         try {
-            // Validar que el usuario esté autenticado
+            // Validar que el usuario este autenticado
             if (userEmail == null || userEmail.isBlank()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Usuario no autenticado");
             }
 
-            // Obtener el usuario de la sesión
+            // Obtener el usuario de la sesion
             Usuario usuario = usuarioRepositorio.buscarPorEmail(userEmail)
                     .orElseThrow(() -> new DomainException("Usuario no encontrado"));
 
-            // Validar que sea médico
+            // Validar que sea medico
             if (!usuario.esMedico()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("Solo los médicos pueden ver pacientes en atención");
+                        .body("Solo los medicos pueden ver pacientes en atencion");
             }
 
-            // Obtener todos los ingresos en proceso
-            List<Ingreso> ingresosEnProceso = repositorioIngresos.obtenerEnProceso();
+            // Obtener el medico del usuario
+            Medico medico = usuario.getMedico();
+            if (medico == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("El usuario no tiene asociada una entidad de medico");
+            }
+
+            // Obtener la Atencion activa (EN_PROCESO) del medico
+            Optional<Atencion> atencionOpt = repositorioAtenciones.obtenerAtencionActivaPorMedico(medico);
             
-            // Buscar si hay algún ingreso en proceso (por ahora, devolvemos el primero si existe)
-            // En el futuro podrías asociar el ingreso con el médico específico
-            Optional<Ingreso> ingresoEnProceso = ingresosEnProceso.stream()
-                    .findFirst();
-            
-            if (ingresoEnProceso.isPresent()) {
-                IngresoDTO dto = IngresoMapper.toDTO(ingresoEnProceso.get());
+            if (atencionOpt.isPresent()) {
+                Atencion atencion = atencionOpt.get();
+                Ingreso ingreso = atencion.getIngreso();
+                IngresoDTO dto = IngresoMapper.toDTO(ingreso);
                 return ResponseEntity.ok(dto);
             } else {
                 return ResponseEntity.ok(null);

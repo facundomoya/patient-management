@@ -25,13 +25,13 @@ public class AppConfig {
 
     @Bean
     public RepositorioPacientes repositorioPacientes() {
-        // Implementación en memoria
+        // ImplementaciÃ³n en memoria
         return new RepositorioPacientesEnMemoria();
     }
 
     @Bean
     public RepositorioObrasSociales repositorioObrasSociales() {
-        // Implementación en memoria
+        // ImplementaciÃ³n en memoria
         return new RepositorioObrasSocialesEnMemoria();
     }
 
@@ -47,13 +47,13 @@ public class AppConfig {
 
     @Bean
     public RepositorioEnfermeras repositorioEnfermeras() {
-        // Implementación en memoria
+        // ImplementaciÃ³n en memoria
         return new RepositorioEnfermerasEnMemoria();
     }
 
     @Bean
     public RepositorioMedicos repositorioMedicos() {
-        // Implementación en memoria
+        // ImplementaciÃ³n en memoria
         return new RepositorioMedicosEnMemoria();
     }
 
@@ -74,7 +74,7 @@ public class AppConfig {
 
     @Bean
     public PasswordHasher passwordHasher() {
-        // Usar logRounds bajo para desarrollo (más rápido)
+        // Usar logRounds bajo para desarrollo (mÃ¡s rÃ¡pido)
         return new BCryptHasher(4);
     }
 
@@ -111,8 +111,8 @@ public class AppConfig {
     }
 
     @Bean
-    public ModuloReclamo moduloReclamo(RepositorioIngresos repoIngresos) {
-        return new ModuloReclamo(repoIngresos);
+    public ModuloReclamo moduloReclamo(RepositorioIngresos repoIngresos, RepositorioAtenciones repoAtenciones) {
+        return new ModuloReclamo(repoIngresos, repoAtenciones);
     }
 
     @Bean
@@ -136,3 +136,4 @@ public class AppConfig {
         return new AltaMedicoService(repoMedicos, servicioAuth);
     }
 }
+

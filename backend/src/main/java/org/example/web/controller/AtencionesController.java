@@ -23,7 +23,8 @@ public class AtencionesController {
 
     @GetMapping
     public ResponseEntity<List<AtencionDTO>> listarAtenciones() {
-        List<Atencion> atenciones = repositorioAtenciones.obtenerAtenciones();
+        // Obtener solo atenciones donde el ingreso esta FINALIZADO
+        List<Atencion> atenciones = repositorioAtenciones.obtenerFinalizadas();
         
         // Ordenar por fecha de atención (más reciente primero)
         List<AtencionDTO> dtos = atenciones.stream()
@@ -34,4 +35,3 @@ public class AtencionesController {
         return ResponseEntity.ok(dtos);
     }
 }
-

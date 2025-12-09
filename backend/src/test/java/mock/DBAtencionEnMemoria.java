@@ -2,7 +2,11 @@ package mock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.example.domain.Atencion;
+import org.example.domain.EstadoIngreso;
+import org.example.domain.Medico;
 
 import org.example.app.interfaces.RepositorioAtenciones;
 
@@ -17,5 +21,32 @@ public class DBAtencionEnMemoria implements RepositorioAtenciones{
     @Override
     public List<Atencion> obtenerAtenciones(){
         return atenciones;
+    }
+
+    @Override
+    public Optional<Atencion> obtenerPorMedico(Medico medico){
+        return atenciones.stream()
+                .filter(a -> a.getMedico().getCuil().equals(medico.getCuil()))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Atencion> obtenerAtencionActivaPorMedico(Medico medico){
+        return atenciones.stream()
+                .filter(a -> a.getMedico().getCuil().equals(medico.getCuil()))
+                .filter(a -> a.getIngreso().getEstado() == EstadoIngreso.EN_PROCESO)
+                .findFirst();
+    }
+
+    @Override
+    public List<Atencion> obtenerFinalizadas(){
+        return atenciones.stream()
+                .filter(a -> a.getIngreso().getEstado() == EstadoIngreso.FINALIZADO)
+                .filter(a -> {
+                    String informe = a.getInforme();
+                    return informe == null || !informe.contains("Reclamado - Atencion (En proceso)");
+                })
+                .sorted((a, b) -> b.getFechaAtencion().compareTo(a.getFechaAtencion()))
+                .collect(Collectors.toList());
     }
 }
