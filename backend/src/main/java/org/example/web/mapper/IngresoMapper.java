@@ -23,7 +23,12 @@ public class IngresoMapper {
         dto.setFrecuenciaRespiratoria(ingreso.getFrecuenciaRespiratoria());
         dto.setTensionSistolica(ingreso.getTensionSistolica());
         dto.setTensionDiastolica(ingreso.getTensionDiastolica());
-        
+
+        // Mapear CUIL de la enfermera (si existe)
+        if (ingreso.getEnfermera() != null) {
+            dto.setEnfermeroCuil(ingreso.getEnfermera().getCuil());
+        }
+
         // Convertir LocalDateTime a String ISO para el frontend
         dto.setFechaIngreso(ingreso.getFechaIngreso().toString());
 

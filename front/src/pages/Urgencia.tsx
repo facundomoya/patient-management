@@ -158,6 +158,8 @@ export default function Urgencia() {
       return;
     }
 
+    const enfermeroCuil = usuario?.cuilActor ? formatearCuil(usuario.cuilActor) : undefined;
+
     const payload: RegistrarUrgenciaDTO = {
       cuilPaciente: formatearCuil(cuilPaciente.value),
       informe: form.informe.trim(),
@@ -168,6 +170,8 @@ export default function Urgencia() {
       frecuenciaRespiratoria: parseOptionalNumber(form.frecuenciaRespiratoria),
       tensionSistolica: parseOptionalNumber(form.tensionSistolica),
       tensionDiastolica: parseOptionalNumber(form.tensionDiastolica),
+
+      enfermeroCuil, // optional: servidor puede ignorarlo o usarlo si decidís
     };
 
     try {
