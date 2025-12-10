@@ -1,6 +1,6 @@
 package org.example.web.controller;
 
-import org.example.app.AltaEnfermeraService;
+import org.example.app.ServicioAltaEnfermera;
 import org.example.app.interfaces.RepositorioEnfermeras;
 import org.example.domain.Exceptions.DomainException;
 import org.example.domain.Enfermera;
@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/enfermeras")
 public class EnfermeraController {
 
-    private final AltaEnfermeraService altaEnfermeraService;
+    private final ServicioAltaEnfermera altaEnfermeraService;
     private final RepositorioEnfermeras repositorioEnfermeras;
 
-    public EnfermeraController(AltaEnfermeraService altaEnfermeraService,
+    public EnfermeraController(ServicioAltaEnfermera altaEnfermeraService,
                               RepositorioEnfermeras repositorioEnfermeras) {
         this.altaEnfermeraService = altaEnfermeraService;
         this.repositorioEnfermeras = repositorioEnfermeras;

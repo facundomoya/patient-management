@@ -4,16 +4,16 @@ import org.example.app.interfaces.RepositorioMedicos;
 import org.example.auth.app.ServicioAuth;
 import org.example.domain.Medico;
 
-public class AltaMedicoService {
+public class ServicioAltaMedico {
 
     private final RepositorioMedicos repoMedicos;
     private ServicioAuth servicioAuth = null;
 
-    public AltaMedicoService(RepositorioMedicos repoMedicos) {
+    public ServicioAltaMedico(RepositorioMedicos repoMedicos) {
         this.repoMedicos = repoMedicos;
     }
 
-    public AltaMedicoService(
+    public ServicioAltaMedico(
             RepositorioMedicos repoMedicos,
             ServicioAuth servicioAuth
     ) {

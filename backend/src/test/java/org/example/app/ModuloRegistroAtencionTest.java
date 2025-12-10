@@ -20,7 +20,7 @@ import mock.DBIngresoEnMemoria;
 public class ModuloRegistroAtencionTest {
     private DBAtencionEnMemoria dbAtencion;
     private DBIngresoEnMemoria dbIngreso;
-    private ModuloRegistroAtencion moduloRegistroAtencion;
+    private ServicioRegistroAtencion moduloRegistroAtencion;
     private Medico medico;
     private Enfermera enfermera;
     private Paciente p1;
@@ -33,7 +33,7 @@ public class ModuloRegistroAtencionTest {
     void setUp(){
         dbAtencion = new DBAtencionEnMemoria();
         dbIngreso = new DBIngresoEnMemoria();
-        moduloRegistroAtencion = new ModuloRegistroAtencion(dbAtencion, dbIngreso);
+        moduloRegistroAtencion = new ServicioRegistroAtencion(dbAtencion, dbIngreso);
 
         medico = new Medico("Dr", "House", "20-43139260-8");
         enfermera = new Enfermera("Lucia", "Paz", "20-32456878-7");

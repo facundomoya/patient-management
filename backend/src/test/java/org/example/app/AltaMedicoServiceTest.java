@@ -11,12 +11,12 @@ import static org.assertj.core.api.Assertions.*;
 class AltaMedicoServiceTest {
 
     DBMedicoEnMemoriaTest repoMed;
-    AltaMedicoService alta;
+    ServicioAltaMedico alta;
 
     @BeforeEach
     void setUp() {
         repoMed = new DBMedicoEnMemoriaTest();
-        alta = new AltaMedicoService(repoMed);
+        alta = new ServicioAltaMedico(repoMed);
     }
 
     @Test

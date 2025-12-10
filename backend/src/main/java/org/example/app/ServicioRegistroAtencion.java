@@ -6,11 +6,11 @@ import org.example.app.interfaces.RepositorioAtenciones;
 import org.example.app.interfaces.RepositorioIngresos;
 import org.example.domain.*;
 
-public class ModuloRegistroAtencion {
+public class ServicioRegistroAtencion {
     private final RepositorioAtenciones dbAtenciones;
     private final RepositorioIngresos dbIngresos;
 
-    public ModuloRegistroAtencion(RepositorioAtenciones dbAtenciones, RepositorioIngresos dbIngresos) {
+    public ServicioRegistroAtencion(RepositorioAtenciones dbAtenciones, RepositorioIngresos dbIngresos) {
         this.dbAtenciones = dbAtenciones;
         this.dbIngresos = dbIngresos;
     }

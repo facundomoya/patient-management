@@ -1,6 +1,6 @@
 package org.example.web.controller;
 
-import org.example.app.ModuloReclamo;
+import org.example.app.ServicioReclamo;
 import org.example.auth.domain.Usuario;
 import org.example.auth.ports.UsuarioRepositorio;
 import org.example.app.interfaces.RepositorioIngresos;
@@ -22,12 +22,12 @@ import java.util.Optional;
 @RequestMapping("/api/reclamo")
 public class ReclamoController {
 
-    private final ModuloReclamo moduloReclamo;
+    private final ServicioReclamo moduloReclamo;
     private final UsuarioRepositorio usuarioRepositorio;
     private final RepositorioIngresos repositorioIngresos;
     private final RepositorioAtenciones repositorioAtenciones;
 
-    public ReclamoController(ModuloReclamo moduloReclamo, 
+    public ReclamoController(ServicioReclamo moduloReclamo, 
                              UsuarioRepositorio usuarioRepositorio,
                              RepositorioIngresos repositorioIngresos,
                              RepositorioAtenciones repositorioAtenciones) {

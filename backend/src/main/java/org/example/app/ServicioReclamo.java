@@ -9,12 +9,12 @@ import org.example.domain.Ingreso;
 import org.example.domain.Medico;
 import org.example.domain.Atencion;
 
-public class ModuloReclamo {
+public class ServicioReclamo {
 
     private final RepositorioIngresos dbIngresos;
     private final RepositorioAtenciones dbAtenciones;
 
-    public ModuloReclamo(RepositorioIngresos dbIngresos, RepositorioAtenciones dbAtenciones) {
+    public ServicioReclamo(RepositorioIngresos dbIngresos, RepositorioAtenciones dbAtenciones) {
         this.dbIngresos = dbIngresos;
         this.dbAtenciones = dbAtenciones;
     }
