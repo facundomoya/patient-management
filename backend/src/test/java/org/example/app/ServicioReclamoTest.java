@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import mock.DBIngresoEnMemoria;
 import org.example.infrastructure.RepositorioAtencionesEnMemoria;
 
-public class ModuloReclamoTest {
+public class ServicioReclamoTest {
     private DBIngresoEnMemoria dbIng;
     private RepositorioAtencionesEnMemoria dbAtenciones;
     private ServicioReclamo moduloRecl;

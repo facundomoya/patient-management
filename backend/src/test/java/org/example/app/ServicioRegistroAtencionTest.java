@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import mock.DBAtencionEnMemoria;
 import mock.DBIngresoEnMemoria;
 
-public class ModuloRegistroAtencionTest {
+public class ServicioRegistroAtencionTest {
     private DBAtencionEnMemoria dbAtencion;
     private DBIngresoEnMemoria dbIngreso;
     private ServicioRegistroAtencion moduloRegistroAtencion;

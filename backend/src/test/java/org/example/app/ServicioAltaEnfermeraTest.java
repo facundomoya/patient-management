@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
-class AltaEnfermeraServiceTest {
+class ServicioAltaEnfermeraTest {
 
     DBEnfermeraEnMemoriaTest repoEnf;
     ServicioAltaEnfermera alta;
