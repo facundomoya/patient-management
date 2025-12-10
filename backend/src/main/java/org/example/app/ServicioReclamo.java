@@ -9,12 +9,12 @@ import org.example.domain.Ingreso;
 import org.example.domain.Medico;
 import org.example.domain.Atencion;
 
-public class ModuloReclamo {
+public class ServicioReclamo {
 
     private final RepositorioIngresos dbIngresos;
     private final RepositorioAtenciones dbAtenciones;
 
-    public ModuloReclamo(RepositorioIngresos dbIngresos, RepositorioAtenciones dbAtenciones) {
+    public ServicioReclamo(RepositorioIngresos dbIngresos, RepositorioAtenciones dbAtenciones) {
         this.dbIngresos = dbIngresos;
         this.dbAtenciones = dbAtenciones;
     }
@@ -31,7 +31,7 @@ public class ModuloReclamo {
 
         // Cambiar estado del ingreso a EN_PROCESO
         siguiente.setEstado(EstadoIngreso.EN_PROCESO);
-        dbIngresos.guardar(siguiente);
+        //dbIngresos.guardar(siguiente);
 
         // Crear Atencion con solo ingreso y medico (informe por defecto "Reclamado")
         Atencion atencion = new Atencion(siguiente, medico);

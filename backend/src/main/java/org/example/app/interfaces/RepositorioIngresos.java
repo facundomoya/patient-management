@@ -9,6 +9,8 @@ public interface RepositorioIngresos {
 
     List<Ingreso> obtenerPendientes(); // Devuelve la lista ordenada
 
+    List<Ingreso> obtenerTodos();
+
     List<Ingreso> obtenerFinalizados();
     
     List<Ingreso> obtenerEnProceso(); // Ingresos que están siendo atendidos

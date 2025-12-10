@@ -1,6 +1,6 @@
 package org.example.web.controller;
 
-import org.example.app.AltaPacienteService;
+import org.example.app.ServicioAltaPaciente;
 import org.example.app.interfaces.RepositorioPacientes;
 import org.example.domain.Exceptions.DomainException;
 import org.example.domain.Paciente;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/pacientes")
 public class PacienteController {
 
-    private final AltaPacienteService altaPacienteService;
+    private final ServicioAltaPaciente altaPacienteService;
     private final RepositorioPacientes repositorioPacientes;
 
-    public PacienteController(AltaPacienteService altaPacienteService,
+    public PacienteController(ServicioAltaPaciente altaPacienteService,
                               RepositorioPacientes repositorioPacientes) {
         this.altaPacienteService = altaPacienteService;
         this.repositorioPacientes = repositorioPacientes;

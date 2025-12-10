@@ -26,6 +26,11 @@ public class RepositorioIngresosEnMemoria implements RepositorioIngresos{
     }
 
     @Override
+    public List<Ingreso> obtenerTodos() {
+        return new ArrayList<>(listaEspera);
+    }
+
+    @Override
     public void eliminarDePendientes(Ingreso ingreso){
         listaEspera.remove(ingreso);
     }

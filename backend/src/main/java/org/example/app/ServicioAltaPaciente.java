@@ -8,12 +8,12 @@ import org.example.app.interfaces.RepositorioObrasSociales;
 import org.example.domain.*;
 import org.example.domain.Exceptions.DomainException;
 
-public class  AltaPacienteService {
+public class  ServicioAltaPaciente {
 
     private final RepositorioPacientes repoPacientes;
     private final RepositorioObrasSociales repoOS;
 
-    public AltaPacienteService(RepositorioPacientes repoPacientes, RepositorioObrasSociales repoOS) {
+    public ServicioAltaPaciente(RepositorioPacientes repoPacientes, RepositorioObrasSociales repoOS) {
         this.repoPacientes = repoPacientes;
         this.repoOS = repoOS;
     }

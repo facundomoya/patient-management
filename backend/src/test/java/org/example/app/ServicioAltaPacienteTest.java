@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-class AltaPacienteServiceTest {
+class ServicioAltaPacienteTest {
 
     DBPacienteEnMemoria repoPac;
     DBObrasSocialesEnMemoria repoOS;
-    AltaPacienteService alta;
+    ServicioAltaPaciente alta;
 
     @BeforeEach
     void setUp() {
@@ -20,7 +20,7 @@ class AltaPacienteServiceTest {
         repoOS  = new DBObrasSocialesEnMemoria();
         // catálogo con OSDE
         repoOS.guardar(new ObraSocial("OSDE", "OSDE"));
-        alta = new AltaPacienteService(repoPac, repoOS);
+        alta = new ServicioAltaPaciente(repoPac, repoOS);
     }
 
     @Test

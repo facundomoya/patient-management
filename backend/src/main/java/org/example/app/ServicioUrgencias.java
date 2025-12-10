@@ -40,6 +40,19 @@ public class ServicioUrgencias {
         Paciente paciente = dbPacientes.buscarPacientePorCuil(cuilPaciente)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
+        boolean yaTieneIngresoPendiente = dbIngresos.obtenerPendientes().stream()
+                .anyMatch(i -> i.getPaciente().getCuil().equals(paciente.getCuil()));
+        if (yaTieneIngresoPendiente) {
+            // Podés usar tu DomainException si la tenés
+            throw new RuntimeException("El paciente ya tiene una urgencia/ingreso pendiente");
+        }
+        boolean yaTieneIngresoEnProceso = dbIngresos.obtenerEnProceso().stream()
+                .anyMatch(i -> i.getPaciente().getCuil().equals(paciente.getCuil()));
+        if (yaTieneIngresoEnProceso) {
+            // Podés usar tu DomainException si la tenés
+            throw new RuntimeException("El paciente ya tiene una urgencia/ingreso en proceso");
+        }
+        
         Ingreso ingreso = new Ingreso(
                 paciente,
                 enfermera,
@@ -59,5 +72,9 @@ public class ServicioUrgencias {
 
     public List<Ingreso> obtenerIngresosPendientes(){
         return dbIngresos.obtenerPendientes();
+    }
+
+    public List<Ingreso> obtenerTodosLosIngresos() {
+        return dbIngresos.obtenerTodos();
     }
 }

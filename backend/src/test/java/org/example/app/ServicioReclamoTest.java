@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Assertions;
 import mock.DBIngresoEnMemoria;
 import org.example.infrastructure.RepositorioAtencionesEnMemoria;
 
-public class ModuloReclamoTest {
+public class ServicioReclamoTest {
     private DBIngresoEnMemoria dbIng;
     private RepositorioAtencionesEnMemoria dbAtenciones;
-    private ModuloReclamo moduloRecl;
+    private ServicioReclamo moduloRecl;
     private Enfermera enfermera;
     private Medico medico;
     private Paciente p1;
@@ -28,7 +28,7 @@ public class ModuloReclamoTest {
     void setUp(){
         dbIng = new DBIngresoEnMemoria();
         dbAtenciones = new RepositorioAtencionesEnMemoria();
-        moduloRecl = new ModuloReclamo(dbIng, dbAtenciones);
+        moduloRecl = new ServicioReclamo(dbIng, dbAtenciones);
 
         enfermera = new Enfermera("Lucia", "Paz", "20-43336577-2");
         medico = new Medico("Juan", "Perez", "20-44580992-7");

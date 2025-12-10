@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-class AltaMedicoServiceTest {
+class ServicioAltaMedicoTest {
 
     DBMedicoEnMemoriaTest repoMed;
-    AltaMedicoService alta;
+    ServicioAltaMedico alta;
 
     @BeforeEach
     void setUp() {
         repoMed = new DBMedicoEnMemoriaTest();
-        alta = new AltaMedicoService(repoMed);
+        alta = new ServicioAltaMedico(repoMed);
     }
 
     @Test

@@ -15,7 +15,7 @@ public class Atencion {
     }
 
     public Atencion(Ingreso ingreso, String informe, Medico medico, LocalDateTime fechaAtencion) {
-        // Validaciones mandatorias 
+         // Validaciones mandatorias 
         if (ingreso == null) throw new DomainException("El ingreso es obligatorio");
         if (medico == null) throw new DomainException("El médico es obligatorio");
         if (informe == null || informe.isBlank()) {
@@ -35,10 +35,10 @@ public class Atencion {
     public Atencion(Ingreso ingreso, String informe, Medico medico) {
         // Validaciones mandatorias 
         if (ingreso == null) throw new DomainException("El ingreso es obligatorio");
-        if (medico == null) throw new DomainException("El médico es obligatorio");
+        if (medico == null) throw new DomainException("El mゼdico es obligatorio");
         if (informe == null || informe.isBlank()) {
-            // Criterio de aceptación: Error si se omite informe 
-            throw new DomainException("El informe de la atención se ha omitido");
+            // Criterio de aceptaciИn: Error si se omite informe 
+            throw new DomainException("El informe de la atenciИn se ha omitido");
         }
 
         this.ingreso = ingreso;
@@ -61,8 +61,15 @@ public class Atencion {
     }
     public void setInforme(String informe) {
         if (informe == null || informe.isBlank()) {
-            throw new DomainException("El informe de la atención se ha omitido");
+            throw new DomainException("El informe de la atenciИn se ha omitido");
         }
         this.informe = informe;
+    }
+
+    public void setFechaAtencion(LocalDateTime fechaAtencion) {
+        if (fechaAtencion == null) {
+            throw new DomainException("La fecha de atenciИn es obligatoria");
+        }
+        this.fechaAtencion = fechaAtencion;
     }
 }

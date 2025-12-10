@@ -5,17 +5,17 @@ import org.example.domain.Enfermera;
 import org.example.auth.app.ServicioAuth;
 
 
-public class AltaEnfermeraService {
+public class ServicioAltaEnfermera {
     
     private final RepositorioEnfermeras repoEnfermeras;
     private final ServicioAuth servicioAuth;
 
-    public AltaEnfermeraService(RepositorioEnfermeras repoEnfermeras) {
+    public ServicioAltaEnfermera(RepositorioEnfermeras repoEnfermeras) {
         this.repoEnfermeras = repoEnfermeras;
         this.servicioAuth = null;
     }
 
-    public AltaEnfermeraService(RepositorioEnfermeras repoEnfermeras, ServicioAuth servicioAuth) {
+    public ServicioAltaEnfermera(RepositorioEnfermeras repoEnfermeras, ServicioAuth servicioAuth) {
         this.repoEnfermeras = repoEnfermeras;
         this.servicioAuth = servicioAuth;
     }

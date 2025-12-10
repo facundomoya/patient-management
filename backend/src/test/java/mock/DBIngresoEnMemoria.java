@@ -40,6 +40,11 @@ public class DBIngresoEnMemoria implements RepositorioIngresos {
     }
 
     @Override
+    public List<Ingreso> obtenerTodos() {
+        return new ArrayList<>(tablaIngresos);
+    }
+
+    @Override
     public List<Ingreso> obtenerEnProceso() {
         return tablaIngresos.stream()
                 .filter(ingreso -> ingreso.getEstado() == EstadoIngreso.EN_PROCESO)

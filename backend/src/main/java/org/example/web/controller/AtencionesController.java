@@ -5,7 +5,9 @@ import org.example.domain.Atencion;
 import org.example.web.dto.AtencionDTO;
 import org.example.web.mapper.AtencionMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,16 +24,28 @@ public class AtencionesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AtencionDTO>> listarAtenciones() {
-        // Obtener solo atenciones donde el ingreso esta FINALIZADO
+    public ResponseEntity<List<AtencionDTO>> listarAtencionesFinalizadas() {
+        // Atenciones cuyo ingreso ya fue finalizado
         List<Atencion> atenciones = repositorioAtenciones.obtenerFinalizadas();
-        
-        // Ordenar por fecha de atención (más reciente primero)
+
         List<AtencionDTO> dtos = atenciones.stream()
                 .sorted(Comparator.comparing(Atencion::getFechaAtencion).reversed())
                 .map(AtencionMapper::toDTO)
                 .collect(Collectors.toList());
-        
+
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/todas")
+    public ResponseEntity<List<AtencionDTO>> listarTodasLasAtenciones() {
+        // Todas las atenciones registradas (incluye reclamadas/en proceso/finalizadas)
+        List<Atencion> atenciones = repositorioAtenciones.obtenerAtenciones();
+
+        List<AtencionDTO> dtos = atenciones.stream()
+                .sorted(Comparator.comparing(Atencion::getFechaAtencion).reversed())
+                .map(AtencionMapper::toDTO)
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(dtos);
     }
 }

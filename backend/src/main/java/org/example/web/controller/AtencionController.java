@@ -1,6 +1,6 @@
 package org.example.web.controller;
 
-import org.example.app.ModuloRegistroAtencion;
+import org.example.app.ServicioRegistroAtencion;
 import org.example.app.interfaces.RepositorioIngresos;
 import org.example.auth.domain.Usuario;
 import org.example.auth.ports.UsuarioRepositorio;
@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/atencion")
 public class AtencionController {
 
-    private final ModuloRegistroAtencion moduloRegistroAtencion;
+    private final ServicioRegistroAtencion moduloRegistroAtencion;
     private final UsuarioRepositorio usuarioRepositorio;
     private final RepositorioIngresos repositorioIngresos;
 
-    public AtencionController(ModuloRegistroAtencion moduloRegistroAtencion,
+    public AtencionController(ServicioRegistroAtencion moduloRegistroAtencion,
                                UsuarioRepositorio usuarioRepositorio,
                                RepositorioIngresos repositorioIngresos) {
         this.moduloRegistroAtencion = moduloRegistroAtencion;
