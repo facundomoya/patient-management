@@ -73,4 +73,8 @@ public class ServicioUrgencias {
     public List<Ingreso> obtenerIngresosPendientes(){
         return dbIngresos.obtenerPendientes();
     }
+
+    public List<Ingreso> obtenerTodosLosIngresos() {
+        return dbIngresos.obtenerTodos();
+    }
 }

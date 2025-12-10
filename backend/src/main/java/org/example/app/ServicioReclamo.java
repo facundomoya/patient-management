@@ -31,7 +31,7 @@ public class ServicioReclamo {
 
         // Cambiar estado del ingreso a EN_PROCESO
         siguiente.setEstado(EstadoIngreso.EN_PROCESO);
-        dbIngresos.guardar(siguiente);
+        //dbIngresos.guardar(siguiente);
 
         // Crear Atencion con solo ingreso y medico (informe por defecto "Reclamado")
         Atencion atencion = new Atencion(siguiente, medico);

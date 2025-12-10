@@ -23,6 +23,7 @@ public class IngresoMapper {
         dto.setFrecuenciaRespiratoria(ingreso.getFrecuenciaRespiratoria());
         dto.setTensionSistolica(ingreso.getTensionSistolica());
         dto.setTensionDiastolica(ingreso.getTensionDiastolica());
+        dto.setEstado(ingreso.getEstado().name());
 
         // Mapear CUIL de la enfermera (si existe)
         if (ingreso.getEnfermera() != null) {

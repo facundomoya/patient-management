@@ -15,6 +15,7 @@ public class IngresoDTO {
     private String frecuenciaRespiratoria; // esta se muestra bien
     private String tensionSistolica; //mal
     private String tensionDiastolica; // mal
+    private String estado;
     private String fechaIngreso; // Fecha de ingreso en formato ISO
     private String enfermeroCuil;
 
@@ -117,5 +118,13 @@ public class IngresoDTO {
 
     public void setEnfermeroCuil(String enfermeroCuil) {
         this.enfermeroCuil = enfermeroCuil;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

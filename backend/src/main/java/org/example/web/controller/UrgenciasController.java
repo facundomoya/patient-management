@@ -93,4 +93,13 @@ public class UrgenciasController {
 
         return ResponseEntity.ok(dtos);
     }
+
+    @GetMapping("/ingresos")
+    public ResponseEntity<List<IngresoDTO>> obtenerTodosLosIngresos() {
+        List<IngresoDTO> dtos = servicioUrgencias.obtenerTodosLosIngresos()
+                .stream()
+                .map(IngresoMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
 }

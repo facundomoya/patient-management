@@ -25,7 +25,7 @@ public class ServicioRegistroAtencion {
 
         ingreso.setEstado(EstadoIngreso.FINALIZADO);
 
-        dbIngresos.guardar(ingreso);
+        //dbIngresos.guardar(ingreso);
 
         return atencion;
     }
