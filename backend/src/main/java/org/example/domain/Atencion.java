@@ -10,9 +10,6 @@ public class Atencion {
     private Medico medico;
     private LocalDateTime fechaAtencion;
 
-    public Atencion(Ingreso ingreso, Medico medico) {
-        this(ingreso, "Reclamado - Atencion (En proceso)", medico);
-    }
 
     public Atencion(Ingreso ingreso, String informe, Medico medico, LocalDateTime fechaAtencion) {
          // Validaciones mandatorias 
@@ -30,21 +27,6 @@ public class Atencion {
         this.medico = medico;
         this.informe = informe;
         this.fechaAtencion = fechaAtencion;
-    }
-
-    public Atencion(Ingreso ingreso, String informe, Medico medico) {
-        // Validaciones mandatorias 
-        if (ingreso == null) throw new DomainException("El ingreso es obligatorio");
-        if (medico == null) throw new DomainException("El mゼdico es obligatorio");
-        if (informe == null || informe.isBlank()) {
-            // Criterio de aceptaciИn: Error si se omite informe 
-            throw new DomainException("El informe de la atenciИn se ha omitido");
-        }
-
-        this.ingreso = ingreso;
-        this.medico = medico;
-        this.informe = informe;
-        this.fechaAtencion = LocalDateTime.now();
     }
 
     public Ingreso getIngreso() {
