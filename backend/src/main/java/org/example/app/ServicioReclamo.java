@@ -1,5 +1,6 @@
 package org.example.app;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.example.app.interfaces.RepositorioIngresos;
@@ -33,8 +34,9 @@ public class ServicioReclamo {
         siguiente.setEstado(EstadoIngreso.EN_PROCESO);
         //dbIngresos.guardar(siguiente);
 
+        String informe = "Reclamado - Ingreso (En proceso)";
         // Crear Atencion con solo ingreso y medico (informe por defecto "Reclamado")
-        Atencion atencion = new Atencion(siguiente, medico);
+        Atencion atencion = new Atencion(siguiente, informe, medico, LocalDateTime.now());
         dbAtenciones.guardar(atencion);
 
         return siguiente;
