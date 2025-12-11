@@ -58,13 +58,12 @@ public class Ingreso implements Comparable<Ingreso> {
 
     @Override
     public int compareTo(Ingreso o) {
-        int porNivel = this.nivelEmergencia.compararCon(o.nivelEmergencia); // usa tu compararCon
+        int porNivel = this.nivelEmergencia.compararCon(o.nivelEmergencia);
         if (porNivel != 0) {
             return porNivel;
         }
         return this.fechaIngreso.compareTo(o.fechaIngreso); // desempate por llegada
     }
-    // ===== Getters de dominio =====
 
     public Paciente getPaciente() {
         return paciente;
@@ -94,14 +93,11 @@ public class Ingreso implements Comparable<Ingreso> {
         return temperatura;
     }
 
-    // Value object completo (por si lo necesitás)
     public FrecuenciaCardiaca getFrecuenciaCardiacaVO() {
         return frecuenciaCardiaca;
     }
 
-    // Conveniencia para el mapper / JSON
     public String getFrecuenciaCardiaca() {
-        // ajustá el nombre del metodo según tu value object
         return frecuenciaCardiaca.getValorFormateado();
     }
 
@@ -110,7 +106,6 @@ public class Ingreso implements Comparable<Ingreso> {
     }
 
     public String getFrecuenciaRespiratoria() {
-        // idem, ajustá si tu VO usa otro nombre
         return frecuenciaRespiratoria.getValorFormateado();
     }
 
@@ -119,7 +114,6 @@ public class Ingreso implements Comparable<Ingreso> {
     }
 
     public String getTensionSistolica() {
-        // ajustá a como se llamen los getters en TensionArterial
         return tensionArterial.getSistolica();
     }
 

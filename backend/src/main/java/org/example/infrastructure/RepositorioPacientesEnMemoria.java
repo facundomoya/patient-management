@@ -13,7 +13,6 @@ public class RepositorioPacientesEnMemoria implements RepositorioPacientes {
     private final Map<String, Paciente> pacientes = new HashMap<>();
 
     public RepositorioPacientesEnMemoria() {
-        // Cargamos algunos pacientes de prueba al iniciar
         inicializarDatosMock();
     }
 
@@ -23,7 +22,7 @@ public class RepositorioPacientesEnMemoria implements RepositorioPacientes {
         ObraSocial os1 = new ObraSocial("OSDE", "OSDE");
         Afiliacion afil1 = new Afiliacion(os1, "12345678");
         Paciente p1 = new Paciente(
-                "20-43336577-2",   // segun el Guard
+                "20-43336577-2", 
                 "Santiago Joaquin",
                 "Martin Peñaloza",
                 dom1,

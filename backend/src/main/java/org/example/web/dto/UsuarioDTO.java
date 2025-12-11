@@ -6,7 +6,7 @@ public class UsuarioDTO {
     private String cuilActor;
     private String nombre;
     private String apellido;
-    private String hashPreview; // Primeros caracteres del hash para verificar que está hasheado
+    private String hashPreview;
 
     public UsuarioDTO() {}
 

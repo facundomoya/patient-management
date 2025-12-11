@@ -1,4 +1,4 @@
-// src/main/java/org/example/web/dto/IngresoDTO.java
+
 package org.example.web.dto;
 
 public class IngresoDTO {
@@ -11,12 +11,12 @@ public class IngresoDTO {
     private String informe;
 
     private Float temperatura;
-    private String frecuenciaCardiaca; // mal
-    private String frecuenciaRespiratoria; // esta se muestra bien
-    private String tensionSistolica; //mal
-    private String tensionDiastolica; // mal
+    private String frecuenciaCardiaca;
+    private String frecuenciaRespiratoria; 
+    private String tensionSistolica; 
+    private String tensionDiastolica;
     private String estado;
-    private String fechaIngreso; // Fecha de ingreso en formato ISO
+    private String fechaIngreso;
     private String enfermeroCuil;
 
     public IngresoDTO() {

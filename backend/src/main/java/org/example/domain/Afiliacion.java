@@ -3,8 +3,8 @@ import org.example.domain.Exceptions.DomainException;
 
 
 public class Afiliacion {
-    private ObraSocial obraSocial;       // mandatorio si existe Afiliacion
-    private String numeroAfiliado;       // mandatorio
+    private ObraSocial obraSocial;      
+    private String numeroAfiliado;     
 
     public Afiliacion(ObraSocial obraSocial, String numeroAfiliado) {
         if (obraSocial == null) throw DomainException.validation("La obra social del afiliado es obligatoria");

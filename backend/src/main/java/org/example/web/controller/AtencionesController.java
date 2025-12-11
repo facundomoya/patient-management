@@ -25,7 +25,6 @@ public class AtencionesController {
 
     @GetMapping
     public ResponseEntity<List<AtencionDTO>> listarAtencionesFinalizadas() {
-        // Atenciones cuyo ingreso ya fue finalizado
         List<Atencion> atenciones = repositorioAtenciones.obtenerFinalizadas();
 
         List<AtencionDTO> dtos = atenciones.stream()
@@ -38,7 +37,6 @@ public class AtencionesController {
 
     @GetMapping("/todas")
     public ResponseEntity<List<AtencionDTO>> listarTodasLasAtenciones() {
-        // Todas las atenciones registradas (incluye reclamadas/en proceso/finalizadas)
         List<Atencion> atenciones = repositorioAtenciones.obtenerAtenciones();
 
         List<AtencionDTO> dtos = atenciones.stream()

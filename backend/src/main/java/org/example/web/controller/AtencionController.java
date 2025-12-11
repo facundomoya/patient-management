@@ -34,32 +34,25 @@ public class AtencionController {
     public ResponseEntity<?> registrarAtencion(@RequestBody RegistrarAtencionRequest request,
                                                 @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
         try {
-            // Validar que el usuario esté autenticado
             if (userEmail == null || userEmail.isBlank()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Usuario no autenticado");
             }
-
-            // Obtener el usuario de la sesión
             Usuario usuario = usuarioRepositorio.buscarPorEmail(userEmail)
                     .orElseThrow(() -> new DomainException("Usuario no encontrado"));
 
-            // Validar que sea médico
             if (!usuario.esMedico()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Solo los médicos pueden registrar atenciones");
             }
 
-            // Obtener el médico del usuario
             Medico medico = usuario.getMedico();
 
-            // Buscar el ingreso por CUIL del paciente en los ingresos en proceso
             Ingreso ingreso = repositorioIngresos.obtenerEnProceso().stream()
                     .filter(i -> i.getCuilPaciente().equals(request.getCuilPaciente()))
                     .findFirst()
                     .orElseThrow(() -> new DomainException("No se encontró un ingreso en proceso para el paciente"));
 
-            // Registrar la atención
             moduloRegistroAtencion.registrarAtencion(
                     ingreso,
                     medico,

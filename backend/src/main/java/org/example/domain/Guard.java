@@ -1,4 +1,4 @@
-// src/main/java/org/example/domain/Guard.java
+
 package org.example.domain;
 
 import java.util.regex.Pattern;
@@ -25,7 +25,6 @@ public final class Guard {
         return val;
     }
 
-    /** Valida CUIL/CUIT con dígito verificador (11 dígitos). Acepta con o sin guiones. */
     public static String cuilValido(String cuil, String message) {
         String s = notBlank(cuil, message).replaceAll("\\D", "");
         if (s.length() != 11) throw DomainException.validation(message).withContext("valor", cuil);

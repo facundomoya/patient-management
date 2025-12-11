@@ -31,7 +31,6 @@ public class ServicioAuth {
         this.medRepo = medRepo;
     }
 
-    // ===== Registro para ENFERMERA (email + password + CUIL enfermera) =====
     public Usuario registrarParaEnfermera(String email, String password, String cuilEnfermera) {
         validarEmail(email);
         validarPassword(password);
@@ -49,7 +48,6 @@ public class ServicioAuth {
         return usuarios.guardar(u);
     }
 
-    // ===== Registro para MEDICO (email + password + CUIL médico) =====
     public Usuario registrarParaMedico(String email, String password, String cuilMedico) {
         validarEmail(email);
         validarPassword(password);
@@ -67,7 +65,6 @@ public class ServicioAuth {
     }
 
     public void inicializarUnUsuario(String cuil) {
-        // Intentar crear usuario para enfermera (si existe)
         try {
             Optional<Enfermera> enfermeraOpt = enfRepo.buscarEnfermeraPorCuil(cuil);
             if (enfermeraOpt.isPresent()) {
@@ -77,14 +74,12 @@ public class ServicioAuth {
                 try {
                     registrarParaEnfermera(email, "password123", enfermera.getCuil());
                 } catch (Exception e) {
-                    // Ignorar si ya existe el usuario u otros errores al registrar
                 }
             }
         } catch (Exception e) {
             System.err.println("Error buscando/enregistrando enfermera para cuil " + cuil + ": " + e.getMessage());
         }
 
-        // Intentar crear usuario para medico (si existe)
         try {
             Optional<Medico> medicoOpt = medRepo.buscarMedicoPorCuil(cuil);
             if (medicoOpt.isPresent()) {
@@ -94,7 +89,6 @@ public class ServicioAuth {
                 try {
                     registrarParaMedico(email, "password123", medico.getCuil());
                 } catch (Exception e) {
-                    // Ignorar si ya existe el usuario u otros errores al registrar
                 }
             }
         } catch (Exception e) {
@@ -102,15 +96,12 @@ public class ServicioAuth {
         }
     }
 
-    // ===== Login =====
     public Usuario login(String email, String password) {
-        // mensaje genérico SIEMPRE
         return usuarios.buscarPorEmail(email)
                 .filter(u -> hasher.matches(password, u.getHash()))
                 .orElseThrow(() -> DomainException.business("3",LOGIN_ERROR));
     }
 
-    // ===== Helpers de validación (in-line) =====
     private static void validarEmail(String email) {
         if (email == null || email.isBlank() || !EMAIL_RE.matcher(email).matches()) {
             throw DomainException.validation("Email inválido").withContext("valor", email);

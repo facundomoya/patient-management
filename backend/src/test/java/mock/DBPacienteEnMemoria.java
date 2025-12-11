@@ -29,7 +29,6 @@ public class DBPacienteEnMemoria implements RepositorioPacientes {
 
     @Override
     public List<Paciente> listarTodos() {
-        // Para tests, alcanza con devolver una copia de los valores
         return new ArrayList<>(pacientes.values());
     }
 }

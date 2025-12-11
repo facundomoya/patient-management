@@ -37,7 +37,7 @@ class ServicioAltaMedicoTest {
     @Test
     void medico_guardado_en_repositorio_ok() {
         String cuil = "20-39393175-3";
-        Medico m = alta.registrarMedico(cuil, "Laura", "Fernández");
+        alta.registrarMedico(cuil, "Laura", "Fernández");
 
         var encontrado = repoMed.buscarMedicoPorCuil(cuil);
         assertThat(encontrado).isPresent();

@@ -9,7 +9,6 @@ public class TensionArterial {
         this.frecuenciaDiastolica = new FrecuenciaDiastolica(frecuenciaDiastolica);
     }
 
-    // ===== Getters de los value objects =====
 
     public FrecuenciaSistolica getFrecuenciaSistolicaVO() {
         return frecuenciaSistolica;
@@ -19,7 +18,6 @@ public class TensionArterial {
         return frecuenciaDiastolica;
     }
 
-    // ===== Getters "planos" para usar desde Ingreso / mapper =====
 
     public String getSistolica() {
         return frecuenciaSistolica.getValorFormateado();

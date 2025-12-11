@@ -18,13 +18,9 @@ public class DomainException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    /** Código estable y legible del error (ej: "paciente.no_encontrado"). */
     private final String code;
 
-    /** Datos de contexto (no sensibles) que ayudan a entender el fallo. */
     private final Map<String, Object> context;
-
-    // ---------- Constructores básicos ----------
 
     public DomainException(String message) {
         this(null, message, null, null);
@@ -56,27 +52,19 @@ public class DomainException extends RuntimeException {
         }
     }
 
-    // ---------- Getters ----------
-
     public String getCode() {
         return code;
     }
 
-    /**
-     * Mapa inmutable con datos de contexto (ej: {"cuil":"20-...","entidad":"Paciente"}).
-     */
     public Map<String, Object> getContext() {
         return context;
     }
 
-    // ---------- Helpers estáticos comunes ----------
 
-    /** Crea una DomainException de validación con código estandarizado. */
     public static DomainException validation(String message) {
         return new DomainException("validacion.error", message);
     }
 
-    /** Crea una DomainException de "no encontrado" con contexto útil. */
     public static DomainException notFound(String entity, String key, Object value) {
         Map<String, Object> ctx = new LinkedHashMap<>();
         ctx.put("entity", entity);
@@ -85,17 +73,10 @@ public class DomainException extends RuntimeException {
                 entity + " no encontrado", ctx);
     }
 
-    /** Crea una DomainException de negocio genérica con código propio. */
     public static DomainException business(String code, String message) {
         return new DomainException(code, message);
     }
 
-    // ---------- Fluent API para anexar contexto ----------
-
-    /**
-     * Devuelve una copia de esta excepción con más contexto (inmutable).
-     * Útil en capas que agregan información sin perder el stack original.
-     */
     public DomainException withContext(String key, Object value) {
         Map<String, Object> ctx = new LinkedHashMap<>(this.context.isEmpty() ? Map.of() : this.context);
         ctx.put(key, value);

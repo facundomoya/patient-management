@@ -22,8 +22,8 @@ public class ModuloUrgenciasNuevoStepDefinitions {
     private final DBIngresoEnMemoria dbIngMockeada;
     private final ServicioUrgencias servicioUrgencias;
 
-    private Enfermera enfermera;       // Objeto enfermera usado por el servicio
-    private String enfermeraCuil;      // CUIL de la enfermera tal como viene en el Background
+    private Enfermera enfermera;      
+    private String enfermeraCuil;
     private Exception excepcionEsperada;
 
     public ModuloUrgenciasNuevoStepDefinitions() {
@@ -32,18 +32,17 @@ public class ModuloUrgenciasNuevoStepDefinitions {
         this.servicioUrgencias = new ServicioUrgencias(dbMockeada, dbIngMockeada);
     }
 
-    // Background: enfermera con columnas: CUIL | Nombre | Apellido
+    // Background
     @Given("que la siguiente enfermera esta registrada:")
     public void queLaSiguienteEnfermeraEstaRegistradaConCuil(List<Map<String, String>> tabla) {
         Map<String, String> fila = tabla.get(0);
         this.enfermeraCuil = get(fila, "Cuil");
         String nombre = get(fila, "Nombre");
         String apellido = get(fila, "Apellido");
-        // Si tu clase Enfermera solo admite (nombre, apellido), conservamos ese constructor.
         this.enfermera = new Enfermera(nombre, apellido, enfermeraCuil);
     }
 
-    // Background: pacientes con columnas: CUIL | Nombre | Apellido | Obra social
+    // Background
     @Given("que los siguientes pacientes esten registrados:")
     public void queLosSiguientesPacientesEstenRegistrados(List<Map<String, String>> tabla) {
         for (Map<String, String> fila : tabla) {
@@ -51,13 +50,11 @@ public class ModuloUrgenciasNuevoStepDefinitions {
             String nombre    = get(fila, "Nombre");
             String apellido  = get(fila, "Apellido");
 
-            // Domicilio MANDATORIO en dominio
             String calle     = get(fila, "Calle");
             Integer numero   = parseInt(get(fila, "Numero"));
             String localidad = get(fila, "Localidad");
             Domicilio domicilio = new Domicilio(calle, numero, localidad);
 
-            // Afiliación OPCIONAL
             String osCod     = get(fila, "Obra Social Codigo");
             String osNom     = get(fila, "Obra Social Nombre");
             String nroAfi    = get(fila, "Numero Afiliado");
@@ -79,8 +76,6 @@ public class ModuloUrgenciasNuevoStepDefinitions {
     public void ingresaElSiguientePaciente(List<Map<String, String>> tabla) {
         excepcionEsperada = null;
         Map<String, String> fila = tabla.get(0);
-
-        // ===== Mandatorios (strings) =====
         String cuilPaciente = get(fila, "Cuil");
         if (isBlank(cuilPaciente)) {
             excepcionEsperada = new IllegalArgumentException("El CUIL del paciente es obligatorio");
@@ -99,9 +94,7 @@ public class ModuloUrgenciasNuevoStepDefinitions {
             return;
         }
 
-
         String frecCardStr = get(fila, "Frecuencia cardiaca");
-        //  String frecCardStr       = "80";
         if (isBlank(frecCardStr)) {
             excepcionEsperada = new IllegalArgumentException("La frecuencia cardiaca es obligatoria");
             return;
@@ -131,29 +124,23 @@ public class ModuloUrgenciasNuevoStepDefinitions {
             return;
         }
 
-        // ===== Parsing (Temperatura puede ser null) =====
-        String temperaturaStr = get(fila, "Temperatura"); // opcional
+        String temperaturaStr = get(fila, "Temperatura");
         Float temperatura = isBlank(temperaturaStr) ? null : parseFloat(temperaturaStr);
 
         Float frecCard = parseFloat(frecCardStr);
         Float frecResp = parseFloat(frecRespStr);
-        //Float frecResp = parseFloat("20");
         Float tensionSis = parseFloat(tensionSisStr);
         Float tensionDia = parseFloat(tensionDiaStr);
 
-        // ===== Validaciones de valores negativos =====
         if (frecCard < 0)   { excepcionEsperada = new IllegalArgumentException("La frecuencia cardiaca no puede ser negativa"); return; }
         if (frecResp < 0)   { excepcionEsperada = new IllegalArgumentException("La frecuencia respiratoria no puede ser negativa"); return; }
         if (tensionSis < 0) { excepcionEsperada = new IllegalArgumentException("La tensión sistolica no puede ser negativa"); return; }
         if (tensionDia < 0) { excepcionEsperada = new IllegalArgumentException("La tensión diastolica no puede ser negativa"); return; }
 
-        // Nivel
         NivelEmergencia nivel = Arrays.stream(NivelEmergencia.values())
                 .filter(ne -> ne.tieneNombre(nivelStr))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Nivel desconocido: " + nivelStr));
-
-        // Validación de consistencia con el Background
         if (enfermeraCuil != null && !enfermeraCuil.equals(cuilEnfermeraFila)) {
             excepcionEsperada = new Exception("El CUIL de la enfermera (" + cuilEnfermeraFila +
                     ") no coincide con el del Background (" + enfermeraCuil + ")");
@@ -177,13 +164,11 @@ public class ModuloUrgenciasNuevoStepDefinitions {
         }
     }
 
-    // ===== Helpers =====
     private static boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
     }
 
 
-    // Then con tabla: CUIL | Nombre | Apellido (usamos solo CUIL para la verificación)
     @Then("la lista de espera esta ordenada segun el nivel de emergencia por cuil de la siguiente manera:")
     public void laListaOrdenadaSegunNivelPorCuil(List<Map<String, String>> tabla) {
         List<String> cuilsEsperados = tabla.stream()
@@ -201,10 +186,8 @@ public class ModuloUrgenciasNuevoStepDefinitions {
     }
 
 
-    // ===== Helpers =====
 
     private static String get(Map<String, String> fila, String key) {
-        // Acceso seguro: trim a la clave y al valor para tolerar espacios incidentales en tablas
         String val = fila.getOrDefault(key, fila.getOrDefault(key.trim(), null));
         return val == null ? null : val.trim();
     }
@@ -224,12 +207,11 @@ public class ModuloUrgenciasNuevoStepDefinitions {
         assertThat(excepcionEsperada.getMessage())
                 .as("El mensaje real no contiene el esperado")
                 .isNotNull()
-                .containsIgnoringCase(mensajeEsperado); // sirve para “es obligatoria” y “no puede ser negativa”
+                .containsIgnoringCase(mensajeEsperado); 
     }
 
     @Given("la lista de espera actual es:")
     public void laListaDeEsperaActualEs(List<Map<String, String>> tabla) {
-        // Debe venir seteada por el Background
         if (enfermera == null) {
             throw new AssertionError("No hay enfermera inicializada desde el Background.");
         }
@@ -246,8 +228,6 @@ public class ModuloUrgenciasNuevoStepDefinitions {
                     .orElseThrow(() -> new RuntimeException("Nivel desconocido: " + nivelStr));
 
             try {
-                // Si el servicio exige que el paciente exista previamente, y no existe,
-                // esto lanzará excepción. La transformamos en un error claro del Given.
                 servicioUrgencias.registrarUrgencia(
                         cuil, enfermera, "Precargado en lista de espera",
                         nivel, 36.8f, 72f, 16f, 120f, 80f

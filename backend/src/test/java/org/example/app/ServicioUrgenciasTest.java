@@ -20,12 +20,10 @@ class ServicioUrgenciasTest {
         db = new DBPacienteEnMemoria();
         dbI = new DBIngresoEnMemoria();
         servicio = new ServicioUrgencias(db, dbI);
-        // CUIL válido (dígito verificador correcto)
         enfermera = new Enfermera("Lucia", "Paz", "20-32456878-7");
     }
 
     private Paciente nuevoPaciente(String cuil, String nombre, String apellido) {
-        // Domicilio mandatorio en tu dominio
         Domicilio dom = new Domicilio("San Martín", 1234, "Tucumán");
         Paciente p = new Paciente(cuil, nombre, apellido, dom);
         db.guardarPaciente(p);
@@ -34,14 +32,11 @@ class ServicioUrgenciasTest {
 
     @Test
     void ordena_por_nivel_de_prioridad_y_luego_por_llegada() {
-        // p1 llega primero con URGENCIA
         Paciente p1 = nuevoPaciente("20-40902338-0", "Facundo", "Moya");
         servicio.registrarUrgencia(
                 p1.getCuil(), enfermera, "dolor", NivelEmergencia.URGENCIA,
                 37.0f, 80f, 18f, 120f, 80f
         );
-
-        // p2 llega después con CRITICA -> debe quedar primero por mayor prioridad
         Paciente p2 = nuevoPaciente("20-43336577-2", "Santiago", "Martin");
         servicio.registrarUrgencia(
                 p2.getCuil(), enfermera, "critico", NivelEmergencia.CRITICA,
@@ -61,8 +56,6 @@ class ServicioUrgenciasTest {
                 p1.getCuil(), enfermera, "dolor leve", NivelEmergencia.URGENCIA_MENOR,
                 36.9f, 75f, 16f, 118f, 78f
         );
-
-        // Pequeña espera para garantizar timestamps distintos
         Thread.sleep(5);
 
         Paciente p2 = nuevoPaciente("20-43336577-2", "Santiago", "Martin");
@@ -73,8 +66,6 @@ class ServicioUrgenciasTest {
 
         var orden = servicio.obtenerIngresosPendientes()
                 .stream().map(Ingreso::getCuilPaciente).toList();
-
-        // Debe mantener orden de llegada porque el nivel es el mismo
         assertThat(orden).containsExactly(p1.getCuil(), p2.getCuil());
     }
 }

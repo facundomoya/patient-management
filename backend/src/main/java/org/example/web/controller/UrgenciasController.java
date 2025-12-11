@@ -1,4 +1,4 @@
-// src/main/java/org/example/web/controller/UrgenciasController.java
+
 package org.example.web.controller;
 
 import org.example.app.ServicioUrgencias;
@@ -37,26 +37,20 @@ public class UrgenciasController {
             @RequestBody AltaUrgenciaRequest req,
             @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
         try {
-            // Validar que el usuario esté autenticado
             if (userEmail == null || userEmail.isBlank()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Usuario no autenticado");
             }
 
-            // Obtener el usuario de la sesión
             Usuario usuario = usuarioRepositorio.buscarPorEmail(userEmail)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // Validar que sea enfermera
             if (!usuario.esEnfermera()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Solo las enfermeras pueden registrar urgencias");
             }
 
-            // Obtener la enfermera del usuario
             Enfermera enfermera = usuario.getEnfermera();
-
-            // Buscar el enum de nivel igual que en los steps de Cucumber
             NivelEmergencia nivel = Arrays.stream(NivelEmergencia.values())
                     .filter(ne -> ne.tieneNombre(req.getNivelEmergencia()))
                     .findFirst()
@@ -78,7 +72,6 @@ public class UrgenciasController {
         } catch (DomainException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            // Podés refinar esto según DomainException, etc.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }

@@ -14,27 +14,17 @@ public class RepositorioMedicosEnMemoria implements RepositorioMedicos {
     private final Map<String, Medico> medicos = new HashMap<>();
 
     public RepositorioMedicosEnMemoria() {
-        // Cargamos algunos médicos de prueba al iniciar
         inicializarDatosMock();
     }
 
     private void inicializarDatosMock() {
-        // Médico 1
         Medico m1 = new Medico(
                 "EDGARDO",
                 "ALONSO",
                 "20-43336577-2"
         );
 
-//        // Médico 2
-//        Medico m2 = new Medico(
-//                "Laura",
-//                "Fernández",
-//                "27-45678901-2"
-//        );
-
         guardarMedico(m1);
-      //  guardarMedico(m2);
     }
 
     @Override

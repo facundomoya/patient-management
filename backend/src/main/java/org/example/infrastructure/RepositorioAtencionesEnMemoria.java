@@ -41,10 +41,6 @@ public class RepositorioAtencionesEnMemoria implements RepositorioAtenciones{
     public List<Atencion> obtenerFinalizadas(){
         return atenciones.stream()
                 .filter(a -> a.getIngreso().getEstado() == EstadoIngreso.FINALIZADO)
-                // .filter(a -> {
-                //     String informe = a.getInforme();
-                //     return informe == null || !informe.contains("Reclamado - Atencion (En proceso)");
-                // })
                 .sorted((a, b) -> b.getFechaAtencion().compareTo(a.getFechaAtencion()))
                 .collect(Collectors.toList());
     }

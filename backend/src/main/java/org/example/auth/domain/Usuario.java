@@ -10,13 +10,12 @@ import java.util.Objects;
 public class Usuario {
     private final String email;
     private final String hash;        // contraseña hasheada
-    private final Enfermera enfermera; // nullable
-    private final Medico medico;       // nullable
+    private final Enfermera enfermera;
+    private final Medico medico;      
 
 
     Usuario(String email, String hash, Enfermera enfermera, Medico medico) {
         if ((enfermera == null) == (medico == null)) {
-            // true == true  -> ambas null  | false == false -> ambas no-null
             throw DomainException.validation(
                     "Usuario debe asociarse a médico o enfermera (exactamente uno)");
         }
@@ -26,7 +25,6 @@ public class Usuario {
         this.medico = medico;
     }
 
-    // Fábricas claras para mantener el invariante
     public static Usuario paraEnfermera(String email, String hash, Enfermera e) {
         return new Usuario(email, hash, Objects.requireNonNull(e), null);
     }

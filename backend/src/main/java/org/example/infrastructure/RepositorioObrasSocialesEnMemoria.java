@@ -9,7 +9,6 @@ public class RepositorioObrasSocialesEnMemoria implements RepositorioObrasSocial
     private final Map<String, ObraSocial> obrasSociales = new HashMap<>();
 
     public RepositorioObrasSocialesEnMemoria() {
-        // Datos mock iniciales
         inicializarDatosMock();
     }
 

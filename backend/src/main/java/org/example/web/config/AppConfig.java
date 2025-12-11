@@ -25,13 +25,11 @@ public class AppConfig {
 
     @Bean
     public RepositorioPacientes repositorioPacientes() {
-        // ImplementaciÃ³n en memoria
         return new RepositorioPacientesEnMemoria();
     }
 
     @Bean
     public RepositorioObrasSociales repositorioObrasSociales() {
-        // ImplementaciÃ³n en memoria
         return new RepositorioObrasSocialesEnMemoria();
     }
 
@@ -47,13 +45,11 @@ public class AppConfig {
 
     @Bean
     public RepositorioEnfermeras repositorioEnfermeras() {
-        // ImplementaciÃ³n en memoria
         return new RepositorioEnfermerasEnMemoria();
     }
 
     @Bean
     public RepositorioMedicos repositorioMedicos() {
-        // ImplementaciÃ³n en memoria
         return new RepositorioMedicosEnMemoria();
     }
 
@@ -62,19 +58,9 @@ public class AppConfig {
         return new RepositorioUsuariosEnMemoria();
     }
 
-    // @Bean
-    // public EnfermeraRepositorio enfermeraRepositorio(RepositorioEnfermeras repoEnfermeras) {
-    //     return new EnfermeraRepositorioAdapter(repoEnfermeras);
-    // }
-
-    // @Bean
-    // public MedicoRepositorio medicoRepositorio(RepositorioMedicos repoMedicos) {
-    //     return new MedicoRepositorioAdapter(repoMedicos);
-    // }
 
     @Bean
     public PasswordHasher passwordHasher() {
-        // Usar logRounds bajo para desarrollo (mÃ¡s rÃ¡pido)
         return new BCryptHasher(4);
     }
 

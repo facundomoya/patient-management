@@ -41,23 +41,18 @@ public class ReclamoController {
     public ResponseEntity<?> reclamarSiguientePaciente(
             @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
         try {
-            // Validar que el usuario este autenticado
             if (userEmail == null || userEmail.isBlank()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Usuario no autenticado");
             }
-
-            // Obtener el usuario de la sesion
             Usuario usuario = usuarioRepositorio.buscarPorEmail(userEmail)
                     .orElseThrow(() -> new DomainException("Usuario no encontrado"));
 
-            // Validar que sea medico
             if (!usuario.esMedico()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Solo los medicos pueden reclamar pacientes");
             }
 
-            // Reclamar siguiente paciente (cambia estado a EN_PROCESO)
             Medico medico = usuario.getMedico();
             if (medico == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -65,7 +60,6 @@ public class ReclamoController {
             }
             Ingreso ingreso = moduloReclamo.reclamarSiguientePaciente(medico);
             
-            // Convertir a DTO
             IngresoDTO dto = IngresoMapper.toDTO(ingreso);
             
             return ResponseEntity.ok(dto);
@@ -83,30 +77,25 @@ public class ReclamoController {
     public ResponseEntity<?> obtenerPacienteEnAtencion(
             @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
         try {
-            // Validar que el usuario este autenticado
             if (userEmail == null || userEmail.isBlank()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Usuario no autenticado");
             }
 
-            // Obtener el usuario de la sesion
+
             Usuario usuario = usuarioRepositorio.buscarPorEmail(userEmail)
                     .orElseThrow(() -> new DomainException("Usuario no encontrado"));
-
-            // Validar que sea medico
             if (!usuario.esMedico()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Solo los medicos pueden ver pacientes en atencion");
             }
 
-            // Obtener el medico del usuario
             Medico medico = usuario.getMedico();
             if (medico == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("El usuario no tiene asociada una entidad de medico");
             }
 
-            // Obtener la Atencion activa (EN_PROCESO) del medico
             Optional<Atencion> atencionOpt = repositorioAtenciones.obtenerAtencionActivaPorMedico(medico);
             
             if (atencionOpt.isPresent()) {

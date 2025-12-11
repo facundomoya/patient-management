@@ -7,24 +7,18 @@ import org.example.domain.Ingreso;
 import org.example.domain.NivelEmergencia;
 import org.example.domain.Paciente;
 
-//import java.util.ArrayList;
-//import java.util.Comparator;
+
 import java.util.List;
 
 public class ServicioUrgencias {
 
-    //SEGREGACION DE INTERFAZ
-    //PATRON ADAPTADOR
     private RepositorioPacientes dbPacientes;
     private final RepositorioIngresos dbIngresos;
 
-    //private final List<Ingreso> listaEspera;
-
-    //INYECCION DE DEPENDENCIA -> Pruebas
     public ServicioUrgencias(RepositorioPacientes dbPacientes, RepositorioIngresos dbIngresos) {
         this.dbPacientes = dbPacientes;
         this.dbIngresos = dbIngresos;
-        //this.listaEspera = new ArrayList<>();
+        
     }
 
 
@@ -43,13 +37,13 @@ public class ServicioUrgencias {
         boolean yaTieneIngresoPendiente = dbIngresos.obtenerPendientes().stream()
                 .anyMatch(i -> i.getPaciente().getCuil().equals(paciente.getCuil()));
         if (yaTieneIngresoPendiente) {
-            // Podés usar tu DomainException si la tenés
+           
             throw new RuntimeException("El paciente ya tiene una urgencia/ingreso pendiente");
         }
         boolean yaTieneIngresoEnProceso = dbIngresos.obtenerEnProceso().stream()
                 .anyMatch(i -> i.getPaciente().getCuil().equals(paciente.getCuil()));
         if (yaTieneIngresoEnProceso) {
-            // Podés usar tu DomainException si la tenés
+            
             throw new RuntimeException("El paciente ya tiene una urgencia/ingreso en proceso");
         }
         
@@ -64,8 +58,6 @@ public class ServicioUrgencias {
                 frecuenciaSistolica,
                 frecuenciaDiastolica);
 
-        //listaEspera.add(ingreso);
-        //listaEspera.sort(Ingreso::compareTo);
 
         dbIngresos.guardar(ingreso);
     }

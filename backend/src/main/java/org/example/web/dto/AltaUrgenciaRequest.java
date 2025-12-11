@@ -1,4 +1,4 @@
-// src/main/java/org/example/web/dto/RegistrarUrgenciaRequest.java
+
 package org.example.web.dto;
 
 public class AltaUrgenciaRequest {
@@ -6,9 +6,9 @@ public class AltaUrgenciaRequest {
     private String cuilPaciente;
 
     private String informe;
-    private String nivelEmergencia; // por ejemplo: "Rojo", "Amarillo", etc. según tu enum
+    private String nivelEmergencia;
 
-    private Float temperatura;           // puede ser null
+    private Float temperatura;   
     private Float frecuenciaCardiaca;
     private Float frecuenciaRespiratoria;
     private Float tensionSistolica;

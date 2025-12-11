@@ -15,6 +15,4 @@ public class FrecuenciaCardiaca extends Frecuencia{
     public String getValorFormateado() {
         return String.format("%.1f",this.value);
     }
-
-    //20.5 lmp
 }

@@ -17,6 +17,7 @@ public class RepositorioIngresosEnMemoria implements RepositorioIngresos{
         listaEspera.add(ingreso);
 
         listaEspera.sort(Ingreso::compareTo);
+        //listaEspera.sort((i1, i2) -> i1.compareTo(i2));
     }
 
     @Override

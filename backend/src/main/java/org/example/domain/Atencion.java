@@ -12,11 +12,9 @@ public class Atencion {
 
 
     public Atencion(Ingreso ingreso, String informe, Medico medico, LocalDateTime fechaAtencion) {
-         // Validaciones mandatorias 
         if (ingreso == null) throw new DomainException("El ingreso es obligatorio");
         if (medico == null) throw new DomainException("El médico es obligatorio");
         if (informe == null || informe.isBlank()) {
-            // Criterio de aceptación: Error si se omite informe 
             throw new DomainException("El informe de la atención se ha omitido");
         }
         if (fechaAtencion == null) {

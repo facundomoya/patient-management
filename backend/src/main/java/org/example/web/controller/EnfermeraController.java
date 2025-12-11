@@ -27,7 +27,6 @@ public class EnfermeraController {
         this.repositorioEnfermeras = repositorioEnfermeras;
     }
 
-    // POST: alta de enfermera
     @PostMapping
     public ResponseEntity<?> crearEnfermera(@RequestBody AltaEnfermeraRequest request) {
         try {
@@ -47,7 +46,6 @@ public class EnfermeraController {
         }
     }
 
-    // GET: listar todas las enfermeras
     @GetMapping
     public ResponseEntity<List<EnfermeraDTO>> listarEnfermeras() {
         List<Enfermera> enfermeras = repositorioEnfermeras.listarTodas();

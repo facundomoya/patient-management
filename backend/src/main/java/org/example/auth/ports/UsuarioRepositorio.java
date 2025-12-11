@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UsuarioRepositorio {
     Usuario guardar(Usuario usuario);
     Optional<Usuario> buscarPorEmail(String email);
-    boolean existePorEnfermera(String cuilEnfermera); // unicidad por actor
+    boolean existePorEnfermera(String cuilEnfermera);
     boolean existePorMedico(String cuilMedico);
-    List<Usuario> listarTodos(); // Para desarrollo/testing
+    List<Usuario> listarTodos();
 }

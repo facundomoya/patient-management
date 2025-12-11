@@ -38,7 +38,7 @@ class ServicioAltaEnfermeraTest {
     @Test
     void enfermera_guardada_en_repositorio_ok() {
         String cuil = "20-33538818-7";
-        Enfermera e = alta.registrarEnfermera(cuil, "Ana", "Martínez");
+        alta.registrarEnfermera(cuil, "Ana", "Martínez");
 
         Optional<Enfermera> encontrada = repoEnf.buscarEnfermeraPorCuil(cuil);
         assertThat(encontrada).isPresent();

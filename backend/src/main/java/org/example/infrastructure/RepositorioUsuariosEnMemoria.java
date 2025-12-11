@@ -13,8 +13,8 @@ import org.example.auth.ports.UsuarioRepositorio;
 
 public class RepositorioUsuariosEnMemoria implements UsuarioRepositorio {
     private final Map<String, Usuario> porEmail = new HashMap<>();
-    private final Set<String> porEnfermera = new HashSet<>(); // CUILs
-    private final Set<String> porMedico = new HashSet<>();    // CUILs
+    private final Set<String> porEnfermera = new HashSet<>(); 
+    private final Set<String> porMedico = new HashSet<>();  
 
     @Override
     public Usuario guardar(Usuario u) {

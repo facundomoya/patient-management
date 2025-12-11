@@ -5,7 +5,6 @@ import org.example.auth.domain.Usuario;
 import org.example.auth.ports.UsuarioRepositorio;
 import org.example.domain.Exceptions.DomainException;
 import org.example.web.dto.LoginRequest;
-//import org.example.web.dto.UsuarioDTO;
 import org.example.web.dto.UsuarioDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +56,6 @@ public class AuthController {
         }
     }
 
-    // Endpoint para desarrollo/testing - listar todos los usuarios con hash preview
     @GetMapping("/usuarios")
     public ResponseEntity<List<UsuarioDTO>> listarUsuarios() {
         List<Usuario> usuarios = usuarioRepositorio.listarTodos();
@@ -73,7 +71,6 @@ public class AuthController {
                         apellido = usuario.getMedico().getApellido();
                     }
 
-                    // Mostrar primeros 20 caracteres del hash para verificar que está hasheado
                     String hash = usuario.getHash();
                     String hashPreview = hash != null && hash.length() > 20 
                             ? hash.substring(0, 20) + "..." 

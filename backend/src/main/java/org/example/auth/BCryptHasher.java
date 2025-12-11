@@ -4,10 +4,9 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.example.auth.ports.PasswordHasher;
 
 public class BCryptHasher implements PasswordHasher {
-    private final int logRounds; // costo/trabajo
+    private final int logRounds;
 
     public BCryptHasher(int logRounds) {
-        // Para tests: 4–6 (rápido). Para prod: 10–12 (seguro, pero más lento).
         this.logRounds = logRounds;
     }
 

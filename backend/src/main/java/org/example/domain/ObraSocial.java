@@ -1,7 +1,7 @@
 package org.example.domain;
 
 public class ObraSocial {
-    private String codigo; // p.ej. "OSDE", "OSECAC"
+    private String codigo;
     private String nombre;
 
     public ObraSocial(String codigo, String nombre) {

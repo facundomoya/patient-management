@@ -28,27 +28,25 @@ public class InicializadorUsuarios implements InitializingBean {
 
     private void inicializarUsuarios() {
         try {
-            // Obtener enfermeras existentes y crear usuarios
+
             repoEnfermeras.listarTodas().forEach(enfermera -> {
                 try {
                     String email = "enfermera" + enfermera.getCuil().replaceAll("[^0-9]", "") + "@clinica.com";
                     servicioAuth.registrarParaEnfermera(email, "password123", enfermera.getCuil());
                 } catch (Exception e) {
-                    // Ignorar si ya existe el usuario
+
                 }
             });
 
-            // Obtener médicos existentes y crear usuarios
             repoMedicos.listarTodos().forEach(medico -> {
                 try {
                     String email = "medico" + medico.getCuil().replaceAll("[^0-9]", "") + "@clinica.com";
                     servicioAuth.registrarParaMedico(email, "password123", medico.getCuil());
                 } catch (Exception e) {
-                    // Ignorar si ya existe el usuario
+
                 }
             });
         } catch (Exception e) {
-            // Si falla, continuar sin usuarios de prueba
             System.err.println("Error al inicializar usuarios: " + e.getMessage());
         }
     }

@@ -25,8 +25,6 @@ class ServicioAuthTest {
         hasher   = new BCryptHasher(4);
         enfRepo  = new DBEnfermeraEnMemoria();
         medRepo  = new DBMedicoEnMemoria();
-
-        // seed
         enfRepo.guardar(new Enfermera("Lucia", "Paz", "20-32456878-7"));
         medRepo.guardar(new Medico("Carlos", "Ruiz", "20-55555555-6"));
 
@@ -36,14 +34,8 @@ class ServicioAuthTest {
     @Test
     void el_hash_no_es_la_password_y_matchea_con_bcrypt() {
         var u = auth.registrarParaMedico("m@c.com", "clave1234", "20-55555555-6");
-
-        // El hash NO contiene la password en claro
         assertThat(u.getHash()).doesNotContain("clave1234");
-
-        // Formato típico de BCrypt ($2a/$2b/…)
         assertThat(u.getHash()).startsWith("$2");
-
-        // Verificación correcta con BCrypt (usa salt aleatorio)
         assertThat(hasher.matches("clave1234", u.getHash())).isTrue();
     }
 
@@ -53,7 +45,6 @@ class ServicioAuthTest {
         assertThat(u.esEnfermera()).isTrue();
         assertThat(u.getRol()).isEqualTo("ENFERMERA");
         assertThat(u.getCuilActor()).isEqualTo("20-32456878-7");
-        // BCrypt: verificar con matches
         assertThat(hasher.matches("secreto123", u.getHash())).isTrue();
     }
     @Test
@@ -145,7 +136,6 @@ class ServicioAuthTest {
 
     @Test
     void testRegistro_falla_enfermera_cuil_null() {
-        // Escenario: Se intenta registrar una cuenta, pero se pasa CUIL nulo.
         assertThatThrownBy(() ->
                 auth.registrarParaEnfermera("null@c.com", "secreto123", null)
         ).isInstanceOf(DomainException.class)
@@ -155,7 +145,6 @@ class ServicioAuthTest {
 
     @Test
     void testRegistro_falla_enfermera_cuil_vacio() {
-        // Escenario: Se intenta registrar una cuenta, pero se pasa CUIL nulo.
         assertThatThrownBy(() ->
                 auth.registrarParaEnfermera("null@c.com", "secreto123", "")
         ).isInstanceOf(DomainException.class)
@@ -165,7 +154,6 @@ class ServicioAuthTest {
 
     @Test
     void testRegistro_falla_enfermera_cuil_con_espacio() {
-        // Escenario: Se intenta registrar una cuenta, pero se pasa CUIL nulo.
         assertThatThrownBy(() ->
                 auth.registrarParaEnfermera("null@c.com", "secreto123", "  ")
         ).isInstanceOf(DomainException.class)
@@ -175,7 +163,6 @@ class ServicioAuthTest {
 
     @Test
     void testRegistro_falla_email_vacio_antes_del_arroba() {
-        // El CUIL 20-32456878-7 es válido para Enfermera (configurado en setUp)
         assertThatThrownBy(() ->
                 auth.registrarParaEnfermera("@dominio.com", "secreto123", "20-32456878-7")
         ).isInstanceOf(DomainException.class)
@@ -184,7 +171,6 @@ class ServicioAuthTest {
 
     @Test
     void testRegistro_falla_email_sin_tld() {
-        // TLD (Top-Level Domain) incompleto o ausente
         assertThatThrownBy(() ->
                 auth.registrarParaEnfermera("user@domain", "secreto123", "20-32456878-7")
         ).isInstanceOf(DomainException.class)
@@ -193,7 +179,6 @@ class ServicioAuthTest {
 
     @Test
     void testRegistro_falla_email_con_doble_arroba() {
-        // Estructura con más de un símbolo @
         assertThatThrownBy(() ->
                 auth.registrarParaEnfermera("user@@domain.com", "secreto123", "20-32456878-7")
         ).isInstanceOf(DomainException.class)
@@ -202,21 +187,16 @@ class ServicioAuthTest {
 
     @Test
     void testRegistro_password_exactamente_ocho_caracteres_ok() {
-        String clave = "segura12"; // 8 caracteres
+        String clave = "segura12";
         Usuario u = auth.registrarParaMedico("ocho@c.com", clave, "20-55555555-6");
-
-        // Verificación de éxito y seguridad (BCrypt)
         assertThat(u.esMedico()).isTrue();
         assertThat(hasher.matches(clave, u.getHash())).isTrue();
     }
 
     @Test
     void testRegistro_password_muy_larga_ok() {
-        // Partición de robustez: una contraseña mucho mayor al mínimo
         String clave = "EstaEsUnaClaveSuperSeguraYExtensaDeMasDeOchoCaracteres";
         Usuario u = auth.registrarParaMedico("larga@c.com", clave, "20-55555555-6");
-
-        // Verificación de éxito y seguridad
         assertThat(u.esMedico()).isTrue();
         assertThat(hasher.matches(clave, u.getHash())).isTrue();
     }
