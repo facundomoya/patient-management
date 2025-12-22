@@ -70,14 +70,10 @@ export default function Paciente() {
       const data = await listPacientes();
       setPacientes(data);
     } catch {
-      // en error dejamos la lista vacia
       setPacientes([]);
     }
   }
 
-  /* ----------------------------------------
-       SUBMIT
-  ---------------------------------------- */
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);

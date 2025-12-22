@@ -1,4 +1,3 @@
-// front/src/utils/fecha.ts
 export function formatearFecha(fechaISO: string): string {
     try {
       const fecha = new Date(fechaISO);

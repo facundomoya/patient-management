@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 interface CronometroEsperaProps {
-  fechaInicio: string; // ISO string
+  fechaInicio: string; 
 }
 
 export function CronometroEspera({ fechaInicio }: CronometroEsperaProps) {
@@ -13,7 +13,7 @@ export function CronometroEspera({ fechaInicio }: CronometroEsperaProps) {
     const calcularTiempo = () => {
       const inicio = new Date(fechaInicio);
       const ahora = new Date();
-      const diferencia = Math.floor((ahora.getTime() - inicio.getTime()) / 1000); // en segundos
+      const diferencia = Math.floor((ahora.getTime() - inicio.getTime()) / 1000);
 
       if (diferencia < 0) {
         setTiempoTranscurrido({ minutos: 0, segundos: 0 });
@@ -26,10 +26,9 @@ export function CronometroEspera({ fechaInicio }: CronometroEsperaProps) {
       setTiempoTranscurrido({ minutos, segundos });
     };
 
-    // Calcular inmediatamente
+  
     calcularTiempo();
 
-    // Actualizar cada segundo
     const interval = setInterval(calcularTiempo, 1000);
 
     return () => clearInterval(interval);
@@ -42,4 +41,3 @@ export function CronometroEspera({ fechaInicio }: CronometroEsperaProps) {
     </span>
   );
 }
-

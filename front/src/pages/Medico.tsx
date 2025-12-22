@@ -23,8 +23,6 @@ export default function Medico() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [medicos, setMedicos] = useState<MedicoType[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // 🧠 Hook de CUIL con formateo automático
   const cuilMedico = useCuilInput("");
 
   function onChange<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -42,9 +40,6 @@ export default function Medico() {
     } catch { }
   }
 
-  /* ----------------------------------------
-       SUBMIT
-  ---------------------------------------- */
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -64,7 +59,7 @@ export default function Medico() {
       await createMedico(payload);
       await cargarMedicos();
       setForm(initialForm);
-      cuilMedico.handleChange(""); // reset
+      cuilMedico.handleChange("");
       setOpenModal(false);
       toast.success("Médico creado exitosamente");
     } catch (error: any) {

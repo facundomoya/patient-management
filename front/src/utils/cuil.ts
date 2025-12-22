@@ -1,7 +1,5 @@
 export function validarCuil(cuil: string): boolean {
   if (!cuil) return false;
-
-  // dejar solo dígitos
   const digits = cuil.replace(/\D/g, "");
   if (digits.length !== 11) return false;
 

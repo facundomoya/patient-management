@@ -94,14 +94,11 @@ public class Ingreso implements Comparable<Ingreso> {
         return temperatura;
     }
 
-    // Value object completo (por si lo necesitás)
     public FrecuenciaCardiaca getFrecuenciaCardiacaVO() {
         return frecuenciaCardiaca;
     }
 
-    // Conveniencia para el mapper / JSON
     public String getFrecuenciaCardiaca() {
-        // ajustá el nombre del metodo según tu value object
         return frecuenciaCardiaca.getValorFormateado();
     }
 
@@ -110,7 +107,6 @@ public class Ingreso implements Comparable<Ingreso> {
     }
 
     public String getFrecuenciaRespiratoria() {
-        // idem, ajustá si tu VO usa otro nombre
         return frecuenciaRespiratoria.getValorFormateado();
     }
 
@@ -119,7 +115,6 @@ public class Ingreso implements Comparable<Ingreso> {
     }
 
     public String getTensionSistolica() {
-        // ajustá a como se llamen los getters en TensionArterial
         return tensionArterial.getSistolica();
     }
 

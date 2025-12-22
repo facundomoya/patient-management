@@ -100,8 +100,6 @@ public class ServicioRegistroAtencionTest {
             );
         }
 
-        // El sistema NO debió guardar nada ni cambiar el estado
-
         // El estado debe seguir siendo EN_PROCESO (no FINALIZADO)
         Assertions.assertEquals(EstadoIngreso.EN_PROCESO, ingreso1.getEstado());
 

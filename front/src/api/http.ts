@@ -10,10 +10,8 @@ export const http = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // withCredentials: true, // si necesitás cookies/sesiones
 });
 
-// Interceptor para agregar el header de autenticación
 http.interceptors.request.use((config) => {
   const usuario = getUsuarioLogueado();
   if (usuario) {
@@ -22,7 +20,7 @@ http.interceptors.request.use((config) => {
   return config;
 });
 
-// Un helper para extraer mensajes del backend (DomainException)
+
 export function extractErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
     const data = err.response?.data as any;

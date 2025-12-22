@@ -43,13 +43,11 @@ public class ServicioUrgencias {
         boolean yaTieneIngresoPendiente = dbIngresos.obtenerPendientes().stream()
                 .anyMatch(i -> i.getPaciente().getCuil().equals(paciente.getCuil()));
         if (yaTieneIngresoPendiente) {
-            // Podés usar tu DomainException si la tenés
             throw new RuntimeException("El paciente ya tiene una urgencia/ingreso pendiente");
         }
         boolean yaTieneIngresoEnProceso = dbIngresos.obtenerEnProceso().stream()
                 .anyMatch(i -> i.getPaciente().getCuil().equals(paciente.getCuil()));
         if (yaTieneIngresoEnProceso) {
-            // Podés usar tu DomainException si la tenés
             throw new RuntimeException("El paciente ya tiene una urgencia/ingreso en proceso");
         }
         

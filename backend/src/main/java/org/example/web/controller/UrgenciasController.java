@@ -78,7 +78,6 @@ public class UrgenciasController {
         } catch (DomainException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            // Podés refinar esto según DomainException, etc.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }

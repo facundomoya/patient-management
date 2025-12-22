@@ -15,8 +15,6 @@ type FormState = {
   informe: string;
   
   nivelEmergencia: NivelEmergencia | "";
-
-  // SIGNOS VITALES
   temperatura: string;
   frecuenciaCardiaca: string;
   frecuenciaRespiratoria: string;
@@ -43,20 +41,13 @@ const niveles: NivelEmergencia[] = [
   "Sin Urgencia",
 ];
 
-/* ----------------------------------------
-   COMPONENTE PRINCIPAL
----------------------------------------- */
-
 export default function Urgencia() {
   const [openModal, setOpenModal] = useState(false);
   const [form, setForm] = useState<FormState>(initialForm);
   const [ingresos, setIngresos] = useState<IngresoUrgencia[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // HOOKS DE CUIL
   const cuilPaciente = useCuilInput("");
 
-  // Nuevo: estado para si el CUIL existe en el sistema
   const [cuilExiste, setCuilExiste] = useState<boolean | null>(null);
   const [checkingCuil, setCheckingCuil] = useState(false);
 
@@ -64,9 +55,6 @@ export default function Urgencia() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  /* ----------------------------------------
-     Cargar lista de espera al iniciar
-  ---------------------------------------- */
   useEffect(() => {
     cargarIngresos();
   }, []);
@@ -81,12 +69,7 @@ export default function Urgencia() {
     }
   }
 
-  /* ----------------------------------------
-     Chequear existencia del paciente cuando termine de ingresar el CUIL
-     (se ejecuta mientras se está llenando, no solo al enviar)
-  ---------------------------------------- */
   useEffect(() => {
-    // Solo cuando el hook indica que el formato es válido
     if (cuilPaciente.valido === true) {
       let mounted = true;
       (async () => {
@@ -107,14 +90,9 @@ export default function Urgencia() {
         mounted = false;
       };
     } else {
-      // si no está completo o inválido, no mostramos el mensaje de "no existe"
       setCuilExiste(null);
     }
   }, [cuilPaciente.value, cuilPaciente.valido]);
-
-  /* ----------------------------------------
-     Parse numérico opcional
-  ---------------------------------------- */
 
   function parseOptionalNumber(value: string): number | undefined {
     if (!value.trim()) return undefined;
@@ -122,15 +100,9 @@ export default function Urgencia() {
     return Number.isNaN(num) ? undefined : num;
   }
 
-  /* ----------------------------------------
-     SUBMIT DEL FORMULARIO
-  ---------------------------------------- */
-
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-
-    // Validar que el usuario esté logueado
     const usuario = getUsuarioLogueado();
     if (!usuario) {
       toast.error("Debes iniciar sesión para registrar urgencias");
@@ -144,14 +116,12 @@ export default function Urgencia() {
       return;
     }
 
-    // VALIDACIÓN CUIL PACIENTE
     if (!validarCuil(cuilPaciente.value)) {
       toast.error("El CUIL del paciente es inválido");
       setLoading(false);
       return;
     }
 
-    // VALIDACIÓN: que exista en el sistema
     if (cuilExiste === false) {
       toast.error("El CUIL del paciente no figura registrado en el sistema");
       setLoading(false);
@@ -171,7 +141,7 @@ export default function Urgencia() {
       tensionSistolica: parseOptionalNumber(form.tensionSistolica),
       tensionDiastolica: parseOptionalNumber(form.tensionDiastolica),
 
-      enfermeroCuil, // optional: servidor puede ignorarlo o usarlo si decidís
+      enfermeroCuil,
     };
 
     try {
@@ -192,10 +162,6 @@ export default function Urgencia() {
       setLoading(false);
     }
   }
-
-  /* ----------------------------------------
-     RENDER
-  ---------------------------------------- */
 
   const isInvalid = cuilPaciente.valido === false || cuilExiste === false;
   const isValid = cuilPaciente.valido === true && cuilExiste !== false;

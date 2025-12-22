@@ -23,8 +23,6 @@ export default function Enfermera() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [enfermeras, setEnfermeras] = useState<EnfermeraType[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // 🧠 Hook de CUIL con formateo automático
   const cuilEnfermera = useCuilInput("");
 
   function onChange<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -42,9 +40,6 @@ export default function Enfermera() {
     } catch { }
   }
 
-  /* ----------------------------------------
-       SUBMIT
-  ---------------------------------------- */
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -64,7 +59,7 @@ export default function Enfermera() {
       await createEnfermera(payload);
       await cargarEnfermeras();
       setForm(initialForm);
-      cuilEnfermera.handleChange(""); // reset
+      cuilEnfermera.handleChange("");
       setOpenModal(false);
       toast.success("Enfermera creada exitosamente");
     } catch (error: any) {

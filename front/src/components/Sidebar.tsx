@@ -6,7 +6,6 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const usuario = getUsuarioLogueado();
 
-  // Debug: verificar si el usuario está logueado
   if (!usuario) {
     console.error("No hay usuario logueado en Sidebar");
   }

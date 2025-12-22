@@ -14,7 +14,6 @@ public class RepositorioEnfermerasEnMemoria implements RepositorioEnfermeras {
     private final Map<String, Enfermera> enfermeras = new HashMap<>();
 
     public RepositorioEnfermerasEnMemoria() {
-        // Cargamos algunas enfermeras de prueba al iniciar
         inicializarDatosMock();
     }
 

@@ -1,6 +1,5 @@
 import { http } from "./http";
 
-// ---- Tipos de dominio ----
 export type Cuil = string;
 
 export interface AltaMedicoDTO {
@@ -15,17 +14,12 @@ export interface Medico {
   nombre: string;
 }
 
-// ---- API ----
-
-// Alta médico
 export async function createMedico(payload: AltaMedicoDTO): Promise<Medico> {
   const { data } = await http.post<Medico>("/medicos", payload);
   return data;
 }
 
-// Listar todos los médicos
 export async function listMedicos(): Promise<Medico[]> {
   const { data } = await http.get<Medico[]>("/medicos");
   return data;
 }
-

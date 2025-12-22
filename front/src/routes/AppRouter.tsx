@@ -37,7 +37,6 @@ function RequireMedico({ children }: { children: JSX.Element }) {
 function RedirectIfAuth({ children }: { children: JSX.Element }) {
   const usuario = getUsuarioLogueado();
   if (usuario) {
-    // Redirigir según el rol
     if (usuario.rol === "ENFERMERA") {
       return <Navigate to="/urgencia" replace />;
     } else {

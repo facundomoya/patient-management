@@ -229,7 +229,6 @@ public class ModuloUrgenciasNuevoStepDefinitions {
 
     @Given("la lista de espera actual es:")
     public void laListaDeEsperaActualEs(List<Map<String, String>> tabla) {
-        // Debe venir seteada por el Background
         if (enfermera == null) {
             throw new AssertionError("No hay enfermera inicializada desde el Background.");
         }
@@ -246,8 +245,6 @@ public class ModuloUrgenciasNuevoStepDefinitions {
                     .orElseThrow(() -> new RuntimeException("Nivel desconocido: " + nivelStr));
 
             try {
-                // Si el servicio exige que el paciente exista previamente, y no existe,
-                // esto lanzará excepción. La transformamos en un error claro del Given.
                 servicioUrgencias.registrarUrgencia(
                         cuil, enfermera, "Precargado en lista de espera",
                         nivel, 36.8f, 72f, 16f, 120f, 80f
